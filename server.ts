@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
+const { dbConnect } = require("./utils/db");
 const app = express();
 require("dotenv").config();
 app.use(
@@ -19,4 +20,5 @@ app.get("/hello", function (req, res) {
 });
 
 const port = process.env.PORT;
+dbConnect();
 app.listen(port, () => console.log("Connected."));
