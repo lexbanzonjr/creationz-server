@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { responseReturn } from "../utils/response";
 
 const adminModel = require("../models/adminModel");
 
@@ -7,9 +8,14 @@ class authController {
     const { email, password } = req.body;
     try {
       const admin = await adminModel.findOne({ email }).select("+password");
-      console.log(admin);
-      res.json({});
-    } catch (err) {}
+      if (admin) {
+        res.json(admin);
+      } else {
+        responseReturn(res, 400, { error: "Email not found" });
+      }
+    } catch (error: any) {
+      responseReturn(res, 500, { error: error.message });
+    }
     next();
   };
 }
