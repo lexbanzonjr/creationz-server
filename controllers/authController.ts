@@ -43,8 +43,19 @@ class authController {
   };
 
   get_user = async (req: Request, res: Response, next: any) => {
+    const { id, role } = req.data;
+    try {
+      if (role === "admin") {
+        const user = await adminModel.findById(id);
+        responseReturn(res, 200, { userInfo: user });
+      } else {
+        console.log("seller info");
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
     next();
   };
 }
 
-module.exports = new authController();
+export default new authController();

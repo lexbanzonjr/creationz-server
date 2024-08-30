@@ -18,8 +18,10 @@ export const authMiddleware = async (
         process.env.SECRET as Secret
       ) as IAccessTokenData;
       console.log(decodeToken);
-      // req.role = decodeToken.role;
-      // req.id = decodeToken.id;
+      req.data = {
+        id: decodeToken.id,
+        role: decodeToken.role,
+      };
       next();
     } catch (error) {
       return res.status(409).json({ error: "Please login." });
