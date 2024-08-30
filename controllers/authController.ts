@@ -4,7 +4,8 @@ import { responseReturn } from "../utils/response";
 import { createToken } from "../utils/createToken";
 import { RestError } from "../utils/RestError";
 
-const adminModel = require("../models/adminModel");
+import adminModel from "../models/adminModel";
+import { IAccessTokenData } from "../utils/types";
 
 class authController {
   admin_login = async (req: Request, res: Response, next: any) => {
@@ -26,7 +27,7 @@ class authController {
       const token = createToken({
         id: admin.id,
         role: admin.role,
-      });
+      } as IAccessTokenData);
       res.cookie("accessToken", token, {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
@@ -38,6 +39,10 @@ class authController {
     } catch (error: any) {
       responseReturn(res, error.status || 500, { error: error.message });
     }
+    next();
+  };
+
+  get_user = async (req: Request, res: Response, next: any) => {
     next();
   };
 }
