@@ -2,6 +2,9 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
+import https from "https";
+import fs from "fs";
+import path from "path";
 const { dbConnect } = require("./utils/db");
 const app = express();
 require("dotenv").config();
@@ -21,4 +24,13 @@ app.get("/hello", function (req, res) {
 
 const port = process.env.PORT;
 dbConnect();
-app.listen(port, () => console.log("Connected."));
+
+// Load SSL certificate and key
+const httpsOptions = {
+  key: fs.readFileSync(path.join(__dirname, "./certs/server.key")),
+  cert: fs.readFileSync(path.join(__dirname, "./certs/server.cert")),
+};
+// app.listen(port, () => console.log("Connected."));
+https.createServer(httpsOptions, app).listen(port, () => {
+  console.log(`Secure server is running at https://localhost:${port}`);
+});
