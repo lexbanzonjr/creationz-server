@@ -18,7 +18,7 @@ export const authMiddleware = async (
         process.env.SECRET as Secret
       ) as IAccessTokenData;
       console.log(decodeToken);
-      req.data = {
+      res.locals = {
         id: decodeToken.id,
         role: decodeToken.role,
       };
