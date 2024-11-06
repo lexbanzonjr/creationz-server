@@ -5,7 +5,9 @@ import { createToken } from "../utils/createToken";
 import { RestError } from "../utils/RestError";
 
 import adminModel from "../models/adminModel";
+import userModel from "../models/userModel";
 import { IAccessTokenData } from "../utils/types";
+import { now } from "mongoose";
 
 class authController {
   admin_login = async (req: Request, res: Response, next: any) => {
@@ -53,6 +55,31 @@ class authController {
       }
     } catch (error: any) {
       console.error(error.message);
+    }
+    next();
+  };
+
+  login = async (req: Request, res: Response, next: any) => {
+    const { name, password } = req.body;
+    try {
+      const user = await userModel.findOne({ name, password });
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const token = createToken({
+        id: user._id,
+        role: user.role,
+      } as unknown as IAccessTokenData);
+      res.cookie("accessToken", token, {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+
+      user.lastLogIn = now();
+      user.save();
+      responseReturn(res, 200, { id: user._id, role: user.role });
+    } catch (error: any) {
+      responseReturn(res, 500, { error: error.message });
     }
     next();
   };
