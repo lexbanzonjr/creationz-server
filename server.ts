@@ -16,7 +16,7 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use("/api", require("./routes/authRoute"));
+app.use("/user", require("./routes/userRoute"));
 
 app.get("/hello", function (req, res) {
   res.send("Hello World!");
