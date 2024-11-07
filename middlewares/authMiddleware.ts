@@ -17,14 +17,14 @@ export const authMiddleware = async (
         accessToken,
         process.env.SECRET as Secret
       ) as IAccessTokenData;
-      console.log(decodeToken);
+
       res.locals = {
         id: decodeToken.id,
         role: decodeToken.role,
       };
       next();
     } catch (error) {
-      return res.status(409).json({ error: "Please login." });
+      return res.status(409).json({ error });
     }
   }
 };
