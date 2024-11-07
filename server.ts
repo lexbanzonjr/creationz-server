@@ -19,6 +19,8 @@ app.use(cookieParser());
 app.use("/user", require("./routes/userRoute"));
 app.use("/auth", require("./routes/authRoute"));
 
+app.use("/yahoo/auth", require("./routes/yahoo/authRoute"));
+
 app.get("/hello", function (req, res) {
   res.send("Hello World!");
 });
