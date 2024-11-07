@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import jwt, { Secret } from "jsonwebtoken";
-import { IAccessTokenData } from "../utils/types";
+import { decodeToken } from "../utils/token";
 
 export const authMiddleware = async (
   req: Request,
@@ -11,20 +10,17 @@ export const authMiddleware = async (
 
   if (!accessToken) {
     return res.status(409).json({ error: "Please login." });
-  } else {
-    try {
-      const decodeToken = jwt.verify(
-        accessToken,
-        process.env.SECRET as Secret
-      ) as IAccessTokenData;
+  }
 
-      res.locals = {
-        id: decodeToken.id,
-        role: decodeToken.role,
-      };
-      next();
-    } catch (error) {
-      return res.status(409).json({ error });
-    }
+  try {
+    const data = decodeToken(accessToken);
+
+    res.locals = {
+      id: data.id,
+      role: data.role,
+    };
+    next();
+  } catch (error) {
+    return res.status(409).json({ error });
   }
 };

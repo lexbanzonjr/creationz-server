@@ -1,7 +1,7 @@
 import bcrpty from "bcrypt";
 import { Request, Response } from "express";
 import { responseReturn } from "../utils/response";
-import { createToken } from "../utils/createToken";
+import { createToken } from "../utils/token";
 import { RestError } from "../utils/RestError";
 
 import adminModel from "../models/adminModel";
