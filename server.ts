@@ -20,6 +20,10 @@ app.use("/user", require("./routes/userRoute"));
 app.use("/auth", require("./routes/authRoute"));
 
 app.use("/yahoo/auth", require("./routes/yahoo/authRoute"));
+app.use(
+  "/yahoo/fantasy/basketball",
+  require("./routes/yahoo/fantasy/basketballRoute")
+);
 
 app.get("/hello", function (req, res) {
   res.send("Hello World!");
