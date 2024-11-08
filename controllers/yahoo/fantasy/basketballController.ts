@@ -1,21 +1,14 @@
 import { Request, Response } from "express";
 import axios from "axios";
+import basketballServices from "../../../services/yahoo/fantasy/basketballServices";
 
 namespace Yahoo {
   export class authController {
     team = async (req: Request, res: Response, next: any) => {
       try {
-        const response = await axios.get(
-          "https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games;game_keys=nba/teams",
-          {
-            headers: {
-              Authorization: `Bearer ${res.locals.user.token.access_token}`,
-            },
-          }
+        res.json(
+          await basketballServices.team(res.locals.user.token.access_token)
         );
-
-        res.set("content-type", "text/xml");
-        res.send(response.data);
       } catch (error: any) {
         res.send(error);
       }
