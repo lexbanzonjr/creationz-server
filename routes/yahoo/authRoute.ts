@@ -5,8 +5,8 @@ import { authMiddleware as yahooAuthMiddleware } from "./../../middlewares/yahoo
 
 namespace Yahoo {
   export let router = Router();
-  router.get("/login", authMiddleware, auth.login);
   router.get("/callback", auth.callback);
+  router.get("/login", authMiddleware, auth.login);
   router.get("/refresh_token", yahooAuthMiddleware, auth.refreshToken);
 }
 
