@@ -5,7 +5,7 @@ import { RestError } from "../../utils/RestError";
 namespace Yahoo {
   export interface IUser {
     userId: String;
-    data: Object;
+    token: Object;
   }
 
   export const userSchema = new Schema<IUser>({
@@ -13,12 +13,12 @@ namespace Yahoo {
       type: String,
       required: true,
     },
-    data: {
+    token: {
       type: Object,
+      required: true,
     },
   }).pre("save", async function (next) {
     const yahooUser = this;
-    console.log(yahooUser);
     // make sure the user exist
     if (null === userModel.findById(yahooUser.userId))
       throw new RestError("User does not exist", { status: 400 });

@@ -42,7 +42,7 @@ namespace Yahoo {
 
       const yahooUser = new userModel({
         userId: data?.id,
-        data: await response?.data,
+        token: await response?.data,
       });
       yahooUser.save();
 
