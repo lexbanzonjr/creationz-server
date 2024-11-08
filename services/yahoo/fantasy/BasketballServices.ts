@@ -11,7 +11,28 @@ class BasketballServices {
         },
       }
     );
-    return await parseStringPromise(response.data);
+    const json: any = await parseStringPromise(response.data);
+
+    let players: {
+      player_key: string;
+      name: string;
+      status: string[];
+      primary_position: string;
+      positions: string[];
+    }[] = [];
+    json.fantasy_content.team[0].roster[0].players[0].player.forEach(
+      (player: any) => {
+        players.push({
+          player_key: player.player_key[0],
+          name: player.name[0].full[0],
+          status: player.status,
+          primary_position: player.primary_position,
+          positions: player.eligible_positions[0].position,
+        });
+      }
+    );
+
+    return { players };
   };
 
   team = async (access_token: string) => {
