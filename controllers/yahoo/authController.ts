@@ -45,8 +45,8 @@ namespace Yahoo {
         token: await response?.data,
       });
       let tokenExpire = new Date();
-      tokenExpire.setMilliseconds(
-        tokenExpire.getMilliseconds() + response?.data.expires_in
+      tokenExpire.setSeconds(
+        tokenExpire.getSeconds() + response?.data.expires_in
       );
       yahooUser.tokenExpire = tokenExpire;
       yahooUser.save();
@@ -103,8 +103,8 @@ namespace Yahoo {
 
       user.token = response.data;
       let tokenExpire = new Date();
-      tokenExpire.setMilliseconds(
-        tokenExpire.getMilliseconds() + response?.data.expires_in
+      tokenExpire.setSeconds(
+        tokenExpire.getSeconds() + response?.data.expires_in
       );
       user.tokenExpire = tokenExpire;
       user = await user.save();
