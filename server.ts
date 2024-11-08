@@ -20,6 +20,7 @@ app.use("/user", require("./routes/userRoute"));
 app.use("/auth", require("./routes/authRoute"));
 
 app.use("/yahoo/auth", require("./routes/yahoo/authRoute"));
+app.use("/yahoo/fantasy/", require("./routes/yahoo/fantasyRoute"));
 app.use(
   "/yahoo/fantasy/basketball",
   require("./routes/yahoo/fantasy/basketballRoute")
