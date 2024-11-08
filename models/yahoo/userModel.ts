@@ -1,11 +1,17 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, now } from "mongoose";
 import userModel from "../userModel";
 import { RestError } from "../../utils/RestError";
 
 namespace Yahoo {
   export interface IUser {
     userId: String;
-    token: Object;
+    token: {
+      access_token: String;
+      refresh_token: String;
+      expires_in: Number;
+      token_type: String;
+    };
+    tokenExpire: Date;
   }
 
   export const userSchema = new Schema<IUser>({
@@ -16,6 +22,9 @@ namespace Yahoo {
     token: {
       type: Object,
       required: true,
+    },
+    tokenExpire: {
+      type: Date,
     },
   }).pre("save", async function (next) {
     const yahooUser = this;

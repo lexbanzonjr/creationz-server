@@ -44,6 +44,11 @@ namespace Yahoo {
         userId: data?.id,
         token: await response?.data,
       });
+      let tokenExpire = new Date();
+      tokenExpire.setMilliseconds(
+        tokenExpire.getMilliseconds() + response?.data.expires_in
+      );
+      yahooUser.tokenExpire = tokenExpire;
       yahooUser.save();
 
       responseReturn(res, 200);
@@ -97,6 +102,11 @@ namespace Yahoo {
       );
 
       user.token = response.data;
+      let tokenExpire = new Date();
+      tokenExpire.setMilliseconds(
+        tokenExpire.getMilliseconds() + response?.data.expires_in
+      );
+      user.tokenExpire = tokenExpire;
       user = await user.save();
 
       if (req.query.redirect !== undefined) {
