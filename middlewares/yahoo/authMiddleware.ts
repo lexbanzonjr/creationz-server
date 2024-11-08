@@ -18,10 +18,9 @@ export const authMiddleware = async (
     const data = decodeToken(accessToken);
     const user = await userModel.findOne({ userId: data.id });
     if (null === user) throw new RestError("Please login.", { status: 400 });
-    console.log(user.token);
     res.locals = { user };
-    next();
   } catch (error) {
     return res.status(409).json({ error });
   }
+  next();
 };
