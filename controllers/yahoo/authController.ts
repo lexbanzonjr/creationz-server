@@ -5,6 +5,7 @@ import qs from "querystring";
 import stateModel from "../../models/stateModel";
 import userModel from "../../models/yahoo/userModel";
 import { responseReturn } from "../../utils/response";
+import { RestError } from "../../utils/RestError";
 
 const clientId = process.env.YAHOO_CLIENT_ID;
 const clientSecret = process.env.YAHOO_CLIENT_SECRET;
@@ -69,6 +70,40 @@ namespace Yahoo {
         res.redirect(redirect);
       }
 
+      next();
+    };
+
+    refreshToken = async (
+      req: Request<{}, {}, {}, { redirect?: string }>,
+      res: Response,
+      next: any
+    ) => {
+      let user = await userModel.findById(res.locals.user._id);
+      if (null === user) throw new RestError("Unknown user", { status: 400 });
+      const response = await axios.post(
+        tokenUrl,
+        qs.stringify({
+          client_id: clientId,
+          client_secret: clientSecret,
+          redirect_uri: redirectUri,
+          refresh_token: res.locals.user.token.refresh_token,
+          grant_type: "refresh_token",
+        }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+
+      user.token = response.data;
+      user = await user.save();
+
+      if (req.query.redirect !== undefined) {
+        res.redirect(req.query.redirect);
+      } else {
+        res.send(user);
+      }
       next();
     };
   }
