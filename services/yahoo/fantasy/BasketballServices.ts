@@ -1,7 +1,7 @@
 import axios from "axios";
 import { parseStringPromise } from "xml2js";
 
-class basketballServices {
+class BasketballServices {
   roster = async (access_token: string, team_key: string) => {
     const response = await axios.get(
       `https://fantasysports.yahooapis.com/fantasy/v2/team/${team_key}/roster`,
@@ -33,4 +33,4 @@ class basketballServices {
   };
 }
 
-export default new basketballServices();
+export default new BasketballServices();

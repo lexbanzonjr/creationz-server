@@ -9,7 +9,7 @@ import userModel from "../models/userModel";
 import { IAccessTokenData } from "../utils/types";
 import { now } from "mongoose";
 
-class authController {
+class AuthController {
   admin_login = async (req: Request, res: Response, next: any) => {
     const { email, password } = req.body;
     try {
@@ -85,4 +85,4 @@ class authController {
   };
 }
 
-export default new authController();
+export default new AuthController();

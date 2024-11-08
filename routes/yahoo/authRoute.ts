@@ -1,5 +1,5 @@
 import { Router } from "express";
-import auth from "../../controllers/yahoo/authController";
+import auth from "../../controllers/yahoo/AuthController";
 import { authMiddleware } from "./../../middlewares/authMiddleware";
 import { authMiddleware as yahooAuthMiddleware } from "./../../middlewares/yahoo/authMiddleware";
 

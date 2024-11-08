@@ -4,7 +4,7 @@ import { RestError } from "../utils/RestError";
 
 import userModel from "../models/userModel";
 
-class userController {
+class UserController {
   create = async (req: Request, res: Response, next: any) => {
     const { name, email, password, role } = req.body;
     try {
@@ -46,4 +46,4 @@ class userController {
   };
 }
 
-export default new userController();
+export default new UserController();
