@@ -3,9 +3,13 @@ import BasketballServices from "../../../services/yahoo/fantasy/BasketballServic
 
 export class BasketballController {
   roster = async (req: Request, res: Response, next: any) => {
-    const accessToken = res.locals.user.token.access_token;
-    const team = await BasketballServices.team(accessToken);
-    const roster = await BasketballServices.roster(accessToken, team.team_key);
+    const { access_token } = res.locals.user.token;
+    const { team_key } = req.body;
+    const team = await BasketballServices.team({ access_token });
+    const roster = await BasketballServices.roster({
+      access_token,
+      team_key,
+    });
 
     res.json(roster);
 
@@ -13,9 +17,10 @@ export class BasketballController {
   };
 
   team = async (req: Request, res: Response, next: any) => {
+    const { access_token } = res.locals.user.token;
     try {
       res.json(
-        await BasketballServices.team(res.locals.user.token.access_token)
+        await BasketballServices.team({ access_token })
       );
     } catch (error: any) {
       res.send(error);

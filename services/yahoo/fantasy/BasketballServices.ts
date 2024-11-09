@@ -2,12 +2,16 @@ import axios from "axios";
 import { parseStringPromise } from "xml2js";
 
 class BasketballServices {
-  roster = async (access_token: string, team_key: string) => {
+  roster = async (params: {
+    access_token: string;
+    team_key: string | undefined;
+  }) => {
+    if (params.team_key === undefined) throw Error("team_key undefined");
     const response = await axios.get(
-      `https://fantasysports.yahooapis.com/fantasy/v2/team/${team_key}/roster`,
+      `https://fantasysports.yahooapis.com/fantasy/v2/team/${params.team_key}/roster`,
       {
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${params.access_token}`,
         },
       }
     );
@@ -35,12 +39,12 @@ class BasketballServices {
     return { players };
   };
 
-  team = async (access_token: string) => {
+  team = async (params: {access_token: string}) => {
     const response = await axios.get(
       "https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games;game_keys=nba/teams",
       {
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${params.access_token}`,
         },
       }
     );

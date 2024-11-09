@@ -3,10 +3,9 @@ import FantasyServices from "../../services/yahoo/fantasy/FantasyServices";
 
 export class FantasyController {
   league = async (req: Request, res: Response, next: any) => {
-    const accessToken = res.locals.user.token.access_token;
-    res.json(
-      await FantasyServices.league(accessToken, "Peanut Gallery 2024-2025")
-    );
+    const { access_token } = res.locals.user.token;
+    const { name } = req.body;
+    res.json(await FantasyServices.league({ access_token, name }));
 
     next();
   };
