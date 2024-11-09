@@ -15,7 +15,61 @@ export interface Team {
   name: string;
 }
 
+export type RankingStatus =
+  | "A" /* All players */
+  | "FA" /* Free Agency */
+  | "W"; /* Waiver */
+
+export type SortStatus =
+  | "OR" /* Overall Rank – based on all available fantasy points for the season */
+  | "AR" /* Actual Rank – based on the most recent data and player performance */
+  | "PR"; /*Preseason Rank – Yahoo’s projected rank before the season starts.*/
+/* Stat IDs: You can also sort by specific statistics by providing their stat ID. You can refer to 
+  Yahoo's API documentation to find the correct stat ID for different categories (e.g., points, rebounds, assists). */
+
 class BasketballServices {
+  rankings = async (params: {
+    access_token: string;
+    league_key?: string;
+    sort?: SortStatus;
+    start?: number;
+    status?: RankingStatus;
+  }) => {
+    if (params.league_key === undefined) throw Error("league_key required");
+    const response = await axios.get(
+      `https://fantasysports.yahooapis.com/fantasy/v2/league/${
+        params.league_key
+      }/players;sort=${params.sort ?? "OR"};status=${
+        params.status ?? "FA"
+      };start=${params.start ?? 0}`,
+      {
+        headers: {
+          Authorization: `Bearer ${params.access_token}`,
+        },
+      }
+    );
+
+    // xml to json
+    const jsonResponse = await parseStringPromise(response.data);
+    interface jsonPlayer {}
+
+    // List players
+    let players: Player[] = [];
+    jsonResponse.fantasy_content.league[0].players[0].player.forEach(
+      (player: any, index: number) => {
+        players.push({
+          player_key: player.player_key[0],
+          name: player.name[0].full[0],
+          status: player.status,
+          primary_position: player.primary_position,
+          positions: player.eligible_positions[0].position,
+        });
+      }
+    );
+
+    return { players };
+  };
+
   roster = async (params: { access_token: string; team_key?: string }) => {
     if (params.team_key === undefined) throw Error("team_key required");
     const response = await axios.get(

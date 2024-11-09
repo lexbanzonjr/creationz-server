@@ -6,6 +6,21 @@ export class BasketballController {
     next();
   };
 
+  rankings = async (req: Request, res: Response, next: any) => {
+    const { access_token } = res.locals.user.token;
+    const { league_key, sort, start, status } = req.body;
+    const rankings = await BasketballServices.rankings({
+      access_token,
+      league_key,
+      sort,
+      start,
+      status,
+    });
+    res.json(rankings);
+
+    next();
+  };
+
   roster = async (req: Request, res: Response, next: any) => {
     const { access_token } = res.locals.user.token;
     const { team_key } = req.body;

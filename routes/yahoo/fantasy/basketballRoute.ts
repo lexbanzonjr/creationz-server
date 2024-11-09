@@ -4,6 +4,7 @@ import basketball from "../../../controllers/yahoo/fantasy/BasketballController"
 import { tokenMiddleware } from "../../../middlewares/yahoo/tokenMiddleware";
 
 export let router = Router();
+router.get("/rankings", [authMiddleware, tokenMiddleware], basketball.rankings);
 router.get("/roster", [authMiddleware, tokenMiddleware], basketball.roster);
 router.get("/team", [authMiddleware, tokenMiddleware], basketball.team);
 
