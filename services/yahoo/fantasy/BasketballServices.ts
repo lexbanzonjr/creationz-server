@@ -39,7 +39,11 @@ class BasketballServices {
     return { players };
   };
 
-  team = async (params: {access_token: string}) => {
+  team = async (params: {
+    access_token: string;
+    team_key?: string;
+    name?: string;
+  }) => {
     const response = await axios.get(
       "https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games;game_keys=nba/teams",
       {
@@ -50,11 +54,31 @@ class BasketballServices {
     );
 
     const json = await parseStringPromise(response.data);
-    return {
-      team_key:
-        json.fantasy_content.users[0].user[0].games[0].game[0].teams[0].team[0]
-          .team_key[0],
-    };
+
+    let result: { team_key: string; team_id: string; name: string }[] = [];
+    const teams: { team_key: string[]; team_id: string[]; name: string[] }[] =
+      json.fantasy_content.users[0].user[0].games[0].game[0].teams[0].team;
+
+    teams.forEach((team) => {
+      let push = false;
+
+      if (params.team_key !== undefined || params.name !== undefined) {
+        push =
+          team.team_key[0] === params.team_key || team.name[0] === params.name;
+      } else {
+        push = true;
+      }
+
+      if (push) {
+        result.push({
+          team_key: team.team_key[0],
+          team_id: team.team_id[0],
+          name: team.name[0],
+        });
+      }
+    });
+
+    return result;
   };
 }
 
