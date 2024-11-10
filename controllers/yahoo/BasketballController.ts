@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import BasketballServices from "../../../services/yahoo/fantasy/BasketballServices";
+import BasketballServices from "../../services/yahoo/BasketballServices";
 
 export class BasketballController {
   addDropPlayer = async (req: Request, res: Response, next: any) => {

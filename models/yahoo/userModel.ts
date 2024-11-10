@@ -1,6 +1,7 @@
-import { Schema, model, now } from "mongoose";
+import mongoose, { Schema, model, now } from "mongoose";
 import userModel from "../userModel";
 import { RestError } from "../../utils/RestError";
+import { ILeague, leagueSchema } from "./leagueModel";
 
 export interface IUser {
   userId: String;
@@ -11,6 +12,10 @@ export interface IUser {
     token_type: String;
   };
   tokenExpire: Date;
+  fantasy: {
+    leagues: ILeague[];
+    leaguesLastSync: Date;
+  };
 }
 
 export const userSchema = new Schema<IUser>({
@@ -24,6 +29,12 @@ export const userSchema = new Schema<IUser>({
   },
   tokenExpire: {
     type: Date,
+  },
+  fantasy: {
+    leagues: [leagueSchema],
+    leaguesLastSync: {
+      type: Date,
+    },
   },
 }).pre("save", async function (next) {
   const yahooUser = this;

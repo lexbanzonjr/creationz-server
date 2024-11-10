@@ -5,6 +5,7 @@ import cors from "cors";
 import https from "https";
 import fs from "fs";
 import path from "path";
+
 const { dbConnect } = require("./utils/db");
 const app = express();
 require("dotenv").config();
@@ -19,12 +20,7 @@ app.use(cookieParser());
 app.use("/user", require("./routes/userRoute"));
 app.use("/auth", require("./routes/authRoute"));
 
-app.use("/yahoo/auth", require("./routes/yahoo/authRoute"));
-app.use("/yahoo/fantasy/", require("./routes/yahoo/fantasyRoute"));
-app.use(
-  "/yahoo/fantasy/basketball",
-  require("./routes/yahoo/fantasy/basketballRoute")
-);
+app.use("/yahoo", require("./routes/yahooRoute"));
 
 app.get("/hello", function (req, res) {
   res.send("Hello World!");

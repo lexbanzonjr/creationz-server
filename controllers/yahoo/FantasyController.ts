@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import FantasyServices from "../../services/yahoo/fantasy/FantasyServices";
+import FantasyServices from "../../services/yahoo/FantasyServices";
 
 export class FantasyController {
   league = async (req: Request, res: Response, next: any) => {

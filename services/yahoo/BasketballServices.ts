@@ -28,6 +28,14 @@ export type SortStatus =
   Yahoo's API documentation to find the correct stat ID for different categories (e.g., points, rebounds, assists). */
 
 class BasketballServices {
+  addDropPlayer = async (params: {
+    accessToken: string;
+    leagueKey: string;
+    teamKey: string;
+    playerKeyToAdd: string;
+    playerKeyToDrop: string;
+  }) => {};
+
   rankings = async (params: {
     access_token: string;
     league_key?: string;
