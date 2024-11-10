@@ -1,7 +1,6 @@
 import axios from "axios";
 import { parseStringPromise } from "xml2js";
-import teamModel, { ITeam } from "../models/teamModel";
-import userModel from "../models/userModel";
+import { ITeam } from "../models/teamModel";
 
 class TeamServices {
   get_sync = async (params: {
