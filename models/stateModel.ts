@@ -10,4 +10,4 @@ const stateSchema = new Schema<IState>({
   },
 });
 
-export default model<IState>("users", stateSchema);
+export default model<IState>("states", stateSchema);

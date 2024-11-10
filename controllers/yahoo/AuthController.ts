@@ -39,7 +39,7 @@ export class AuthController {
       }
     );
 
-    const yahooUser = new userModel({
+    let yahooUser = new userModel({
       userId: data?.id,
       token: await response?.data,
     });
@@ -48,9 +48,9 @@ export class AuthController {
       tokenExpire.getSeconds() + response?.data.expires_in
     );
     yahooUser.tokenExpire = tokenExpire;
-    yahooUser.save();
+    yahooUser = await yahooUser.save();
 
-    responseReturn(res, 200);
+    responseReturn(res, 200, { yahooUser });
 
     next();
   };

@@ -62,8 +62,8 @@ class AuthController {
   login = async (req: Request, res: Response, next: any) => {
     const { name, password } = req.body;
     try {
-      const user = await userModel.findOne({ name, password });
-      if (!user) {
+      let user = await userModel.findOne({ name, password });
+      if (null === user) {
         throw new Error("User not found");
       }
 
@@ -76,7 +76,7 @@ class AuthController {
       });
 
       user.lastLogIn = now();
-      user.save();
+      user = await user.save();
       responseReturn(res, 200, { id: user._id, role: user.role });
     } catch (error: any) {
       responseReturn(res, 500, { error: error.message });
