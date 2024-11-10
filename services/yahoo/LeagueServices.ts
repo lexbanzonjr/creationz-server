@@ -4,7 +4,7 @@ import leagueModel, { ILeague } from "../../models/yahoo/leagueModel";
 import userModel from "../../models/yahoo/userModel";
 
 export class LeagueServices {
-  get_sync = async (params: {
+  sync = async (params: {
     access_token: string;
     userId: string;
     name?: string;
@@ -28,6 +28,7 @@ export class LeagueServices {
     interface jsonLeagueDetails {
       league_key: String;
       name: String;
+      end_date: String;
     }
     const jsonGames: jsonGame[] =
       jsonResponse.fantasy_content.users[0].user[0].games[0].game;
@@ -41,6 +42,7 @@ export class LeagueServices {
       for (const jsonLeague of jsonLeagues) {
         const league_key = jsonLeague.league[0].league_key[0];
         const name = jsonLeague.league[0].name[0];
+        const end_date = jsonLeague.league[0].end_date[0];
 
         // Add to the list
         const paramExists = params.name;
@@ -48,9 +50,14 @@ export class LeagueServices {
         if (paramExists ? doesOneParamMatch : true) {
           let league = await leagueModel.findOne({ league_key });
           if (league === null) {
-            league = new leagueModel({ league_key, name });
+            league = new leagueModel({});
+            league.league_key = league_key;
+            league.name = name;
             league = await league.save();
           }
+
+          // check if league has ended
+          league.ended = new Date() > new Date(end_date);
           leagues.push(league);
         }
       }

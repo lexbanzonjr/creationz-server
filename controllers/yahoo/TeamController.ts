@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import LeagueServices from "../../services/yahoo/LeagueServices";
+import TeamServices from "../../services/yahoo/TeamServices";
 import UserServices from "../../services/yahoo/UserServices";
 
-class LeagueController {
+class TeamController {
   get = async (req: Request, res: Response, next: any) => {
     const { leagues } = res.locals.user.fantasy;
     res.json({ leagues });
@@ -12,15 +12,20 @@ class LeagueController {
   get_sync = async (req: Request, res: Response, next: any) => {
     const { access_token } = res.locals.user.token;
     const { _id } = res.locals.user;
+    const { league_key } = req.body;
 
     // Sync leagues
-    await LeagueServices.sync({ access_token, userId: _id });
-
-    // Get user object
-    let user = await UserServices.get({ _id });
-    res.send(user);
+    const team = await TeamServices.get_sync({
+      access_token,
+      userId: _id,
+      league_key,
+    });
+    res.send(team);
+    // // Get user object
+    // let user = await UserServices.get({ _id });
+    // res.send(user);
     next();
   };
 }
 
-export default new LeagueController();
+export default new TeamController();

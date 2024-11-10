@@ -5,6 +5,7 @@ import { ILeague, leagueSchema } from "./leagueModel";
 
 export interface IUser {
   userId: String;
+  guid: String;
   token: {
     access_token: String;
     refresh_token: String;
@@ -21,11 +22,12 @@ export interface IUser {
 export const userSchema = new Schema<IUser>({
   userId: {
     type: String,
-    required: true,
+  },
+  guid: {
+    type: String,
   },
   token: {
     type: Object,
-    required: true,
   },
   tokenExpire: {
     type: Date,

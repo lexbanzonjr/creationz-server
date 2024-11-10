@@ -1,8 +1,11 @@
 import { Schema, model } from "mongoose";
+import { ITeam } from "./teamModel";
 
 export interface ILeague {
   league_key: String;
   name: String;
+  ended: Boolean;
+  team: ITeam;
 }
 
 export const leagueSchema = new Schema<ILeague>({
@@ -13,6 +16,9 @@ export const leagueSchema = new Schema<ILeague>({
   name: {
     type: String,
     required: true,
+  },
+  ended: {
+    type: Boolean,
   },
 });
 
