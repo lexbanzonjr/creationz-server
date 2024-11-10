@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { decodeToken } from "../../utils/token";
-import userModel from "../../models/yahoo/userModel";
-import { RestError } from "../../utils/RestError";
+import { decodeToken } from "../../../utils/token";
+import userModel from "../models/userModel";
+import { RestError } from "../../../utils/RestError";
 import { now } from "mongoose";
 
 export const tokenMiddleware = async (

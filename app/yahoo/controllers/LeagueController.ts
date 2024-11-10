@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import LeagueServices from "../../services/yahoo/LeagueServices";
-import UserServices from "../../services/yahoo/UserServices";
+import LeagueServices from "../services/LeagueServices";
+import UserServices from "../services/UserServices";
 
 class LeagueController {
   get = async (req: Request, res: Response, next: any) => {

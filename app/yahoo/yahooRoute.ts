@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { authMiddleware } from "../middlewares/authMiddleware";
-import { authMiddleware as yahooAuthMiddleware } from "../middlewares/yahoo/authMiddleware";
-import { tokenMiddleware } from "../middlewares/yahoo/tokenMiddleware";
-import AuthController from "../controllers/yahoo/AuthController";
-import LeagueController from "../controllers/yahoo/LeagueController";
-import TeamController from "../controllers/yahoo/TeamController";
-import UserController from "../controllers/yahoo/UserController";
+import { authMiddleware } from "./middlewares/authMiddleware";
+import { authMiddleware as yahooAuthMiddleware } from "./middlewares/authMiddleware";
+import { tokenMiddleware } from "./middlewares/tokenMiddleware";
+import AuthController from "./controllers/AuthController";
+import LeagueController from "./controllers/LeagueController";
+import TeamController from "./controllers/TeamController";
+import UserController from "./controllers/UserController";
 
 export let router = Router();
 router.get("/auth/callback", AuthController.callback);

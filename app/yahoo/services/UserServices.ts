@@ -1,7 +1,7 @@
 import axios from "axios";
-import userModel, { userSchema } from "../../models/yahoo/userModel";
+import userModel, { userSchema } from "../models/userModel";
 import { parseStringPromise } from "xml2js";
-import { RestError } from "../../utils/RestError";
+import { RestError } from "../../../utils/RestError";
 
 class UserServices {
   get = async (params: { _id: string }) => {

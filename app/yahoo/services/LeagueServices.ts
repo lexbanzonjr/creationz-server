@@ -1,7 +1,7 @@
 import axios from "axios";
 import { parseStringPromise } from "xml2js";
-import leagueModel, { ILeague } from "../../models/yahoo/leagueModel";
-import userModel from "../../models/yahoo/userModel";
+import leagueModel, { ILeague } from "../models/leagueModel";
+import userModel from "../models/userModel";
 
 export class LeagueServices {
   sync = async (params: {

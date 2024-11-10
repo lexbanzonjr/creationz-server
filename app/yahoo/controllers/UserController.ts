@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import UserServices from "../../services/yahoo/UserServices";
+import UserServices from "../services/UserServices";
 
 class UserController {
   get = async (req: Request, res: Response, next: any) => {

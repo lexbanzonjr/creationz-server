@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import TeamServices from "../../services/yahoo/TeamServices";
-import UserServices from "../../services/yahoo/UserServices";
+import TeamServices from "../services/TeamServices";
+import UserServices from "../services/UserServices";
 
 class TeamController {
   get = async (req: Request, res: Response, next: any) => {
@@ -14,7 +14,7 @@ class TeamController {
     const { _id } = res.locals.user;
     const { league_key } = req.body;
 
-    // Sync leagues
+    // Sync teams
     const team = await TeamServices.get_sync({
       access_token,
       userId: _id,

@@ -1,6 +1,6 @@
 import mongoose, { Schema, model, now } from "mongoose";
-import userModel from "../userModel";
-import { RestError } from "../../utils/RestError";
+import userModel from "../../../models/userModel";
+import { RestError } from "../../../utils/RestError";
 import { ILeague, leagueSchema } from "./leagueModel";
 
 export interface IUser {

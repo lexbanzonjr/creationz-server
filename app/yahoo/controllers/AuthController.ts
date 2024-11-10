@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import axios from "axios";
 import qs from "querystring";
 
-import stateModel from "../../models/stateModel";
-import userModel from "../../models/yahoo/userModel";
-import { responseReturn } from "../../utils/response";
-import { RestError } from "../../utils/RestError";
+import stateModel from "../../../models/stateModel";
+import userModel from "../models/userModel";
+import { responseReturn } from "../../../utils/response";
+import { RestError } from "../../../utils/RestError";
 
 const clientId = process.env.YAHOO_CLIENT_ID;
 const clientSecret = process.env.YAHOO_CLIENT_SECRET;
