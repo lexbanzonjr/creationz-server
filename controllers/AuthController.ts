@@ -31,8 +31,9 @@ class AuthController {
         throw new Error("User not found");
       }
 
-      const token = createToken({
+      const accessToken = createToken({
         id: user._id,
+        roles: user.roles,
       });
       res.cookie("accessToken", token, {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -49,7 +50,7 @@ class AuthController {
 
   register = async (req: Request, res: Response, next: any) => {
     const { email, password } = req.body;
-    const user = new userModel({ email, password, role: "customer" });
+    const user = new userModel({ email, password, roles: ["customer"] });
     await user.save();
     responseReturn(res, 200);
     next();
