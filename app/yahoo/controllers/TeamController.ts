@@ -1,29 +1,32 @@
 import { Request, Response } from "express";
 import TeamServices from "../services/TeamServices";
-import UserServices from "../services/UserServices";
+import { Locals } from "../middlewares/types";
+import leagueModel from "../models/leagueModel";
 
 class TeamController {
   get = async (req: Request, res: Response, next: any) => {
-    const { leagues } = res.locals.user.fantasy;
-    res.json({ leagues });
-    next();
-  };
+    // const { league_key } = req.params;
+    // const { sync } = res.locals as Locals;
+    // const { access_token } = (res.locals as Locals).user.token;
+    // const { userId } = (res.locals as Locals).user;
+    // const { leagues } = (res.locals as Locals).user.fantasy;
+    // // let team = leagues.find((league) => {
+    // //   if (league_key === league.league_key) {
+    // //     return true;
+    // //   }
+    // // })?.team;
 
-  get_sync = async (req: Request, res: Response, next: any) => {
-    const { access_token } = res.locals.user.token;
-    const { _id } = res.locals.user;
-    const { league_key } = req.body;
+    // if (sync) {
+    //   res.json(
+    //     await TeamServices.sync({
+    //       access_token,
+    //       userId,
+    //       league_key,
+    //     })
+    //   );
+    // }
 
-    // Sync teams
-    const team = await TeamServices.get_sync({
-      access_token,
-      userId: _id,
-      league_key,
-    });
-    res.send(team);
-    // // Get user object
-    // let user = await UserServices.get({ _id });
-    // res.send(user);
+    // res.json({ team });
     next();
   };
 }

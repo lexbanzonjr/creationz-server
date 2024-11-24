@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
 import UserServices from "../services/UserServices";
+import { Locals } from "../middlewares/types";
+import userModel from "../models/userModel";
 
 class UserController {
   get = async (req: Request, res: Response, next: any) => {
-    const { user } = res.locals;
+    const { sync, userId } = res.locals as Locals;
+    const user = await userModel.get({
+      _id: userId,
+    });
+    if (sync) {
+      const { access_token } = user.apiToken;
+
+      await UserServices.sync({ access_token, user });
+    }
     res.json({ user });
-    next();
-  };
-
-  get_sync = async (req: Request, res: Response, next: any) => {
-    const { access_token } = res.locals.user.token;
-    const { _id } = res.locals.user;
-
-    const user = await UserServices.sync({ access_token, userId: _id });
-
-    res.send({ user });
     next();
   };
 }

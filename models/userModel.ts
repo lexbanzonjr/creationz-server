@@ -1,10 +1,10 @@
 import { Schema, model, now } from "mongoose";
+import { addExMethods, BaseModel, ExModel } from "./mongoose";
 
-export interface IUser {
+export interface IUser extends BaseModel {
   name: string;
   email: string;
   password: string;
-  role: string;
   dateCreated: Date;
   lastLogIn: Date;
 }
@@ -12,23 +12,15 @@ export interface IUser {
 const userSchema = new Schema<IUser>({
   name: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
-    require: true,
   },
   password: {
     type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true,
   },
   dateCreated: {
     type: Date,
-    required: true,
     default: now,
   },
   lastLogIn: {
@@ -36,4 +28,6 @@ const userSchema = new Schema<IUser>({
   },
 });
 
-export default model<IUser>("user", userSchema);
+addExMethods(userSchema);
+
+export default model<IUser, ExModel<IUser>>("user", userSchema);

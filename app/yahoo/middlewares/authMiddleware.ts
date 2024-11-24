@@ -1,26 +1,23 @@
 import { Request, Response } from "express";
-import { decodeToken } from "../../../utils/token";
+import { decodeToken } from "../utils/token";
+import { Locals } from "./types";
 import userModel from "../models/userModel";
-import { RestError } from "../../../utils/RestError";
+import { RestError } from "../utils/RestError";
+import { getToken } from "./../utils/token";
 
 export const authMiddleware = async (
   req: Request,
   res: Response,
   next: any
 ) => {
-  const { accessToken } = req.cookies;
-
-  if (!accessToken) {
-    return res.status(409).json({ error: "Please login." });
-  }
-
-  try {
-    const data = decodeToken(accessToken);
-    const user = await userModel.findOne({ userId: data.id });
-    if (null === user) throw new RestError("Please login.", { status: 400 });
-    res.locals = { user };
-  } catch (error) {
-    return res.status(409).json({ error });
+  if (!req.url.includes("/auth/")) {
+    const yahooToken = getToken(req);
+    const data = decodeToken(yahooToken);
+    const user = await userModel.findById(data.id);
+    if (null === user) {
+      throw new RestError("Yahoo user not found", { status: 400 });
+    }
+    (res.locals as Locals).userId = data.id;
   }
   next();
 };

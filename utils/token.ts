@@ -1,7 +1,7 @@
 import jwt, { Secret, sign } from "jsonwebtoken";
 import { IAccessTokenData } from "./types";
 
-export const createToken = (data: any) => {
+export const createToken = (data: IAccessTokenData) => {
   return sign(data, process.env.SECRET as Secret, { expiresIn: "7d" });
 };
 

@@ -1,24 +1,26 @@
 import { Request, Response } from "express";
 import LeagueServices from "../services/LeagueServices";
-import UserServices from "../services/UserServices";
+import { Locals } from "../middlewares/types";
+import userModel from "../models/userModel";
 
 class LeagueController {
   get = async (req: Request, res: Response, next: any) => {
-    const { leagues } = res.locals.user.fantasy;
-    res.json({ leagues });
-    next();
-  };
-
-  get_sync = async (req: Request, res: Response, next: any) => {
-    const { access_token } = res.locals.user.token;
-    const { _id } = res.locals.user;
-
-    // Sync leagues
-    await LeagueServices.sync({ access_token, userId: _id });
-
     // Get user object
-    let user = await UserServices.get({ _id });
-    res.send(user);
+    const user = await userModel.get({
+      _id: (res.locals as Locals).userId,
+    });
+
+    // Check if we should sync
+    const { sync } = res.locals as Locals;
+    if (sync) {
+      await LeagueServices.sync({
+        access_token: user.apiToken.access_token,
+        user,
+      });
+    }
+
+    let leagues = user.populate("leagues");
+    res.json({ leagues });
     next();
   };
 }

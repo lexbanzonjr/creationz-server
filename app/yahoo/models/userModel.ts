@@ -1,49 +1,56 @@
-import mongoose, { Schema, model, now } from "mongoose";
-import userModel from "../../../models/userModel";
-import { RestError } from "../../../utils/RestError";
-import { ILeague, leagueSchema } from "./leagueModel";
+import { Schema, Types, model } from "mongoose";
+import { addExMethods, BaseModel, ExModel } from "./mongoose";
 
-export interface IUser {
-  userId: String;
-  guid: String;
-  token: {
-    access_token: String;
-    refresh_token: String;
-    expires_in: Number;
-    token_type: String;
+export interface IUser extends BaseModel {
+  guid: string;
+  bearer: string;
+  lastLogIn: Date;
+  apiToken: {
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
+    token_type: string;
+    expries: Date;
   };
   tokenExpire: Date;
+  manager: Types.ObjectId;
   fantasy: {
-    leagues: ILeague[];
+    leagues: Types.ObjectId[];
     leaguesLastSync: Date;
   };
+  lastSync: Date;
 }
 
 export const userSchema = new Schema<IUser>({
-  userId: {
-    type: String,
+  guid: { type: String },
+  bearer: { type: String },
+  lastLogIn: {
+    type: Date,
   },
-  guid: {
-    type: String,
-  },
-  token: {
-    type: Object,
+  apiToken: {
+    access_token: { type: String },
+    refresh_token: { type: String },
+    expires_in: { type: Number },
+    token_type: { type: String },
+    expries: Date,
   },
   tokenExpire: {
     type: Date,
   },
-  fantasy: {
-    leagues: [leagueSchema],
-    leaguesLastSync: {
-      type: Date,
-    },
+  manager: {
+    type: Schema.Types.ObjectId,
+    ref: "Yahoo.Fantasy.manager",
   },
-}).pre("save", async function (next) {
-  const yahooUser = this;
-  // make sure the user exist
-  if (null === userModel.findById(yahooUser.userId))
-    throw new RestError("User does not exist", { status: 400 });
-  next();
+  fantasy: {
+    leagues: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Yahoo.Fantasy.league",
+      },
+    ],
+  },
 });
 
-export default model<IUser>("Yahoo.user", userSchema);
+addExMethods(userSchema);
+
+export default model<IUser, ExModel<IUser>>("Yahoo.user", userSchema);

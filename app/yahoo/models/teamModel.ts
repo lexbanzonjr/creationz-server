@@ -1,14 +1,16 @@
-import { Schema, model } from "mongoose";
-import { IPlayer, playerSchema } from "./playerModel";
+import { Document, Schema, Types, model } from "mongoose";
+import { addExMethods, ExModel } from "./mongoose";
 
-export interface ITeam {
-  team_key: String;
-  team_id: String;
-  name: String;
-  roster: IPlayer[];
+export interface ITeam extends Document {
+  team_key: string;
+  team_id: string;
+  name: string;
+  roster: Types.ObjectId[];
+  manager: Types.ObjectId;
+  league: Types.ObjectId;
 }
 
-export const teamSchema = new Schema<ITeam>({
+const teamSchema = new Schema<ITeam>({
   team_key: {
     type: String,
     index: true,
@@ -20,7 +22,22 @@ export const teamSchema = new Schema<ITeam>({
   name: {
     type: String,
   },
-  roster: [playerSchema],
+  roster: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Yahoo.Fantasy.player",
+    },
+  ],
+  manager: {
+    type: Schema.Types.ObjectId,
+    ref: "Yahoo.Fantasy.manager",
+  },
+  league: {
+    type: Schema.Types.ObjectId,
+    ref: "Yahoo.Fantasy.league",
+  },
 });
 
-export default model<ITeam>("Yahoo.Fantasy.team", teamSchema);
+addExMethods(teamSchema);
+
+export default model<ITeam, ExModel<ITeam>>("Yahoo.Fantasy.team", teamSchema);

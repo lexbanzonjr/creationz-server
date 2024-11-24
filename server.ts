@@ -5,6 +5,8 @@ import cors from "cors";
 import https from "https";
 import fs from "fs";
 import path from "path";
+import { authMiddleware } from "./middlewares/authMiddleware";
+import { loggingMiddleware } from "./middlewares/loggingMiddleware";
 
 const { dbConnect } = require("./utils/db");
 const app = express();
@@ -17,10 +19,12 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(loggingMiddleware);
+app.use(authMiddleware);
 app.use("/user", require("./routes/userRoute"));
 app.use("/auth", require("./routes/authRoute"));
 
-app.use("/yahoo", require("./routes/yahooRoute"));
+app.use("/yahoo", require("./app/yahoo/yahooRoute"));
 
 app.get("/hello", function (req, res) {
   res.send("Hello World!");

@@ -1,12 +1,24 @@
 import axios from "axios";
 import { parseStringPromise } from "xml2js";
 import leagueModel, { ILeague } from "../models/leagueModel";
-import userModel from "../models/userModel";
+import userModel, { IUser } from "../models/userModel";
+import { Types } from "mongoose";
 
 export class LeagueServices {
+  getRecord = async (params: { _id?: string; league_key?: string }) => {
+    const league = await leagueModel.find({
+      _id: params._id,
+      league_key: params.league_key,
+    });
+    if (league === undefined) {
+      throw new Error("Unknown league: " + params);
+    }
+    return league[0];
+  };
+
   sync = async (params: {
     access_token: string;
-    userId: string;
+    user: IUser;
     name?: string;
   }) => {
     const leagues: ILeague[] = [];
@@ -63,14 +75,15 @@ export class LeagueServices {
       }
     }
 
-    await userModel.findByIdAndUpdate(params.userId, {
+    await userModel.findByIdAndUpdate(params.user._id, {
       $set: { "fantasy.leagues": [] },
     });
 
-    await userModel.findByIdAndUpdate(params.userId, {
-      $set: { "fantasy.leaguesLastSync": new Date() },
+    await userModel.findByIdAndUpdate(params.user.id, {
       $addToSet: { "fantasy.leagues": leagues },
     });
+
+    return { leagues };
   };
 }
 

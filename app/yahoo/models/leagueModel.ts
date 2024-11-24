@@ -1,14 +1,14 @@
-import { Schema, model } from "mongoose";
-import { ITeam } from "./teamModel";
+import { Document, Schema, Types, model } from "mongoose";
+import { addExMethods, ExModel } from "./mongoose";
 
-export interface ILeague {
+export interface ILeague extends Document {
   league_key: String;
   name: String;
   ended: Boolean;
-  team: ITeam;
+  team: Types.ObjectId;
 }
 
-export const leagueSchema = new Schema<ILeague>({
+const leagueSchema = new Schema<ILeague>({
   league_key: {
     type: String,
     required: true,
@@ -20,6 +20,15 @@ export const leagueSchema = new Schema<ILeague>({
   ended: {
     type: Boolean,
   },
+  team: {
+    type: Schema.Types.ObjectId,
+    ref: "Yahoo.Fantasy.team",
+  },
 });
 
-export default model<ILeague>("Yahoo.Fantasy.league", leagueSchema);
+addExMethods(leagueSchema);
+
+export default model<ILeague, ExModel<ILeague>>(
+  "Yahoo.Fantasy.league",
+  leagueSchema
+);

@@ -1,48 +1,26 @@
 import { Router } from "express";
+
 import { authMiddleware } from "./middlewares/authMiddleware";
-import { authMiddleware as yahooAuthMiddleware } from "./middlewares/authMiddleware";
-import { tokenMiddleware } from "./middlewares/tokenMiddleware";
+import { syncMiddleware } from "./middlewares/syncMiddleware";
+
 import AuthController from "./controllers/AuthController";
 import LeagueController from "./controllers/LeagueController";
 import TeamController from "./controllers/TeamController";
 import UserController from "./controllers/UserController";
+import { tokenMiddleware } from "./middlewares/tokenMiddleware";
+
+const all = [syncMiddleware];
 
 export let router = Router();
+router.use(authMiddleware);
+router.use(tokenMiddleware);
 router.get("/auth/callback", AuthController.callback);
-router.get("/auth/login", authMiddleware, AuthController.login);
-router.get(
-  "/auth/refresh_token",
-  yahooAuthMiddleware,
-  AuthController.refreshToken
-);
+router.get("/auth/login", AuthController.login);
+router.get("/auth/refresh_token", AuthController.refreshToken);
 
-router.get("/user", [yahooAuthMiddleware, tokenMiddleware], UserController.get);
-router.get(
-  "/user/sync",
-  [yahooAuthMiddleware, tokenMiddleware],
-  UserController.get_sync
-);
-
-router.get(
-  "/user/league",
-  [yahooAuthMiddleware, tokenMiddleware],
-  LeagueController.get
-);
-router.get(
-  "/user/league/sync",
-  [yahooAuthMiddleware, tokenMiddleware],
-  LeagueController.get_sync
-);
-
-router.get(
-  "/user/team",
-  [yahooAuthMiddleware, tokenMiddleware],
-  TeamController.get
-);
-router.get(
-  "/user/team/sync",
-  [yahooAuthMiddleware, tokenMiddleware],
-  TeamController.get_sync
-);
+router.get("/user", all, UserController.get);
+router.get("/user/league", all, LeagueController.get);
+router.get("/user/league/:league_key", all, LeagueController.get);
+router.get("/user/league/:league_key/team", all, TeamController.get);
 
 module.exports = router;

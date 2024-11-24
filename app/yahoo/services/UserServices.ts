@@ -1,7 +1,7 @@
 import axios from "axios";
-import userModel, { userSchema } from "../models/userModel";
+import userModel, { IUser } from "../models/userModel";
 import { parseStringPromise } from "xml2js";
-import { RestError } from "../../../utils/RestError";
+import LeagueServices from "./LeagueServices";
 
 class UserServices {
   get = async (params: { _id: string }) => {
@@ -23,15 +23,18 @@ class UserServices {
     return jsonResponse.fantasy_content.users[0].user[0].guid[0];
   };
 
-  sync = async (params: { access_token: string; userId: string }) => {
-    let user = await userModel.findById(params.userId);
-    if (null === user) {
-      throw new RestError("User not found", { status: 400 });
-    }
-    user.guid = await this.get_guid(params);
-    user = await user.save();
+  sync = async (params: { access_token: string; user: IUser }) => {
+    let user = params.user;
+    // sync user properties
+    user.guid = await this.get_guid({
+      access_token: params.access_token,
+    });
 
-    return { user };
+    // sync fantasy
+    LeagueServices.sync(params);
+
+    user.lastSync = new Date();
+    user = await user.save();
   };
 }
 
