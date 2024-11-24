@@ -1,86 +1,57 @@
-import bcrpty from "bcrypt";
 import { Request, Response } from "express";
 import { responseReturn } from "../utils/response";
 import { createToken } from "../utils/token";
-import { RestError } from "../utils/RestError";
 
-import adminModel from "../models/adminModel";
 import userModel from "../models/userModel";
-import { IAccessTokenData } from "../utils/types";
-import { now } from "mongoose";
 
 class AuthController {
-  admin_login = async (req: Request, res: Response, next: any) => {
-    const { email, password } = req.body;
-    try {
-      const admin = await adminModel.findOne({ email }).select("+password");
-      if (!admin) {
-        throw new RestError("Email and/or password not not valid", {
-          status: 400,
-        });
-      }
-      const match = await bcrpty.compare(password, admin.password);
-      if (!match) {
-        throw new RestError("Email and/or password not not valid", {
-          status: 400,
-        });
-      }
-
-      const token = createToken({
-        id: admin.id,
-        role: admin.role,
-      } as IAccessTokenData);
-      res.cookie("accessToken", token, {
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      });
-
-      responseReturn(res, 200, {
-        message: "Login successful",
-        accessToken: token,
-      });
-    } catch (error: any) {
-      responseReturn(res, error.status || 500, { error: error.message });
-    }
-    next();
-  };
-
-  get_user = async (req: Request, res: Response, next: any) => {
-    const { id, role } = res.locals;
-    try {
-      if (role === "admin") {
-        const user = await adminModel.findById(id);
-        responseReturn(res, 200, { userInfo: user });
-      } else {
-        console.log("seller info");
-      }
-    } catch (error: any) {
-      console.error(error.message);
-    }
-    next();
-  };
-
   login = async (req: Request, res: Response, next: any) => {
-    const { name, password } = req.body;
+    const authHeader = req.headers["authorization"]; // Get the Authorization header
+
+    if (!authHeader || !authHeader.startsWith("Basic ")) {
+      return res.status(401).send("Missing or invalid Authorization header");
+    }
+
+    // Extract the Base64 encoded part (after "Basic ")
+    const base64Credentials = authHeader.split(" ")[1];
+    const credentials = Buffer.from(base64Credentials, "base64").toString(
+      "utf8"
+    );
+
+    // Split the credentials into username and password
+    const [email, password] = credentials.split(":");
+
+    if (!email || !password) {
+      return res.status(401).send("Invalid Basic Authentication credentials");
+    }
+
     try {
-      let user = await userModel.findOne({ name, password });
+      let user = await userModel.findOne({ email, password });
       if (null === user) {
         throw new Error("User not found");
       }
 
       const token = createToken({
         id: user._id,
-        role: user.role,
-      } as unknown as IAccessTokenData);
+      });
       res.cookie("accessToken", token, {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
 
-      user.lastLogIn = now();
+      user.lastLogIn = new Date();
       user = await user.save();
-      responseReturn(res, 200, { id: user._id, role: user.role });
+      responseReturn(res, 200);
     } catch (error: any) {
       responseReturn(res, 500, { error: error.message });
     }
+    next();
+  };
+
+  register = async (req: Request, res: Response, next: any) => {
+    const { email, password } = req.body;
+    const user = new userModel({ email, password });
+    await user.save();
+    responseReturn(res, 200);
     next();
   };
 }
