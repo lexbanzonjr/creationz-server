@@ -7,6 +7,7 @@ export interface IUser extends BaseModel {
   password: string;
   dateCreated: Date;
   lastLogIn: Date;
+  role: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -25,6 +26,9 @@ const userSchema = new Schema<IUser>({
   },
   lastLogIn: {
     type: Date,
+  },
+  role: {
+    type: String,
   },
 });
 

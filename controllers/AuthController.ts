@@ -49,7 +49,7 @@ class AuthController {
 
   register = async (req: Request, res: Response, next: any) => {
     const { email, password } = req.body;
-    const user = new userModel({ email, password });
+    const user = new userModel({ email, password, role: "customer" });
     await user.save();
     responseReturn(res, 200);
     next();
