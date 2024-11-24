@@ -37,6 +37,8 @@ class AuthController {
       });
       const idToken = {
         id: user._id,
+        name: user.name,
+        email: user.email,
         roles: user.roles,
       };
       user.lastLogIn = new Date();
