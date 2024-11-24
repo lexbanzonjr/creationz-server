@@ -35,9 +35,13 @@ class AuthController {
         id: user._id,
         roles: user.roles,
       });
+      const idToken = {
+        id: user._id,
+        roles: user.roles,
+      };
       user.lastLogIn = new Date();
       user = await user.save();
-      responseReturn(res, 200, { accessToken });
+      responseReturn(res, 200, { accessToken, idToken });
     } catch (error: any) {
       responseReturn(res, 500, { error: error.message });
     }
