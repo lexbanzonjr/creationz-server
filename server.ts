@@ -24,8 +24,6 @@ app.use(authMiddleware);
 app.use("/user", require("./routes/userRoute"));
 app.use("/auth", require("./routes/authRoute"));
 
-app.use("/yahoo", require("./app/yahoo/yahooRoute"));
-
 app.get("/hello", function (req, res) {
   res.send("Hello World!");
 });
