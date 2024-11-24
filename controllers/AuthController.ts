@@ -35,13 +35,9 @@ class AuthController {
         id: user._id,
         roles: user.roles,
       });
-      res.cookie("accessToken", token, {
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      });
-
       user.lastLogIn = new Date();
       user = await user.save();
-      responseReturn(res, 200);
+      responseReturn(res, 200, { accessToken });
     } catch (error: any) {
       responseReturn(res, 500, { error: error.message });
     }
