@@ -38,7 +38,7 @@ class CategoryController {
 
   list = async (req: Request, res: Response, next: any) => {
     try {
-      responseReturn(res, 200, { users: await categoryModel.find() });
+      responseReturn(res, 200, { categories: await categoryModel.find() });
     } catch (error: any) {
       responseReturn(res, error.status || 500, { error: error.message });
     }
