@@ -10,12 +10,14 @@ export const authMiddleware = async (
   next: any
 ) => {
   if (!req.url.includes("/auth/")) {
-    const { accessToken } = req.cookies;
+    const authHeader = req.headers["authorization"];
 
-    if (!accessToken) {
-      return res.status(409).json({ error: "Auth error. Please login." });
+    if (!authHeader) {
+      return res.status(401).send("Missing or invalid Authorization header");
     }
 
+    // Extract the Base64 encoded part (after "Basic ")
+    const accessToken = authHeader.split(" ")[1];
     const data = decodeToken(accessToken);
     const user = await userModel.findById(data.id);
     if (null === user) {
