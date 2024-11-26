@@ -6,7 +6,7 @@ import categoryModel from "../models/categoryModel";
 
 class CategoryController {
   create = async (req: Request, res: Response, next: any) => {
-    const { name, properties } = req.body;
+    const { name, designs } = req.body;
     try {
       if (await categoryModel.exists({ name })) {
         throw new RestError("Name already exist", {
@@ -14,7 +14,7 @@ class CategoryController {
         });
       }
 
-      const category = new categoryModel({ name, properties });
+      const category = new categoryModel({ name, designs });
       await category.save();
 
       responseReturn(res, 200);
