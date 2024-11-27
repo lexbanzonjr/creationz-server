@@ -25,9 +25,9 @@ class CategoryController {
   };
 
   delete = async (req: Request, res: Response, next: any) => {
-    const { name } = req.body;
+    const { _id } = req.query;
     try {
-      await categoryModel.deleteOne({ name });
+      await categoryModel.findByIdAndDelete(_id);
 
       responseReturn(res, 200);
     } catch (error: any) {
