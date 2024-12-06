@@ -18,6 +18,7 @@ class NotFoundError extends Error {
 export interface ExModel<T extends Document> extends Model<T> {
   findAndPopulate(query: any, populate: string): Promise<T[]>;
   get(query: any): Promise<T>;
+  getIndexes(this: Model<T>): Promise<string[]>;
   getReferencedModels(query: string): Promise<ReferenceModel[]>;
 }
 
@@ -36,6 +37,18 @@ async function findAndPopulate<T extends Document>(
   populate: string = ""
 ): Promise<T[]> {
   return await this.find({ query }).populate(populate);
+}
+
+async function getIndexes<T extends Document>(
+  this: Model<T>
+): Promise<string[]> {
+  const indexes: string[] = [];
+  this.schema.eachPath((path: string, schemaType: SchemaType) => {
+    if (schemaType.options?.index) {
+      indexes.push(path);
+    }
+  });
+  return indexes;
 }
 
 async function getOrThrow<T extends Document>(
@@ -87,5 +100,6 @@ async function getReferencedModels<T extends Document>(
 export function addExMethods<T extends Document>(schema: Schema<T>) {
   schema.statics.findAndPopulate = findAndPopulate;
   schema.statics.get = getOrThrow;
+  schema.statics.getIndexes = getIndexes;
   schema.statics.getReferencedModels = getReferencedModels;
 }
