@@ -26,6 +26,6 @@ const categorySchema = new Schema<ICategory>({
   ],
 });
 
-addExMethods(categorySchema);
+addExMethods(categorySchema, { listName: "categories" });
 
 export default model<ICategory, ExModel<ICategory>>("category", categorySchema);

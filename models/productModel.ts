@@ -21,6 +21,6 @@ const productSchema = new Schema<IProduct>({
   },
 });
 
-addExMethods(productSchema);
+addExMethods(productSchema, { listName: "products" });
 
 export default model<IProduct, ExModel<IProduct>>("product", productSchema);

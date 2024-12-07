@@ -19,6 +19,7 @@ export interface ExModel<T extends Document> extends Model<T> {
   findAndPopulate(query: any, populate: string): Promise<T[]>;
   get(query: any): Promise<T>;
   getIndexes(this: Model<T>): Promise<string[]>;
+  getListName: () => string;
   getReferencedModels(query: string): Promise<ReferenceModel[]>;
 }
 
@@ -97,9 +98,13 @@ async function getReferencedModels<T extends Document>(
   return referencedModels;
 }
 
-export function addExMethods<T extends Document>(schema: Schema<T>) {
+export function addExMethods<T extends Document>(
+  schema: Schema<T>,
+  { listName }: { listName: string }
+) {
   schema.statics.findAndPopulate = findAndPopulate;
   schema.statics.get = getOrThrow;
   schema.statics.getIndexes = getIndexes;
+  schema.statics.getListName = () => listName;
   schema.statics.getReferencedModels = getReferencedModels;
 }

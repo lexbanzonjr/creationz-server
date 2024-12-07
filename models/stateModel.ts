@@ -11,6 +11,6 @@ const stateSchema = new Schema<IState>({
   },
 });
 
-addExMethods(stateSchema);
+addExMethods(stateSchema, { listName: "states" });
 
 export default model<IState, ExModel<IState>>("state", stateSchema);

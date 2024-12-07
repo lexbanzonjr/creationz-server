@@ -67,8 +67,13 @@ export default class BaseController<T extends Document<unknown, any, any>> {
     const populate = req.query.populate as string;
     try {
       const models = await this.model.getReferencedModels(populate);
-      const types = await this.model.find().populate<T>(models);
-      responseReturn(res, 200, { types });
+      let list: any = await this.model.find().populate<T>(models);
+      if (list === undefined) {
+        list = [];
+      }
+      let response: any = {};
+      response[this.model.getListName()] = list;
+      responseReturn(res, 200, response);
     } catch (error: any) {
       responseReturn(res, error.status || 500, { error: error.message });
     }

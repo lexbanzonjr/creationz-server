@@ -34,6 +34,6 @@ const userSchema = new Schema<IUser>({
   ],
 });
 
-addExMethods(userSchema);
+addExMethods(userSchema, { listName: "users" });
 
 export default model<IUser, ExModel<IUser>>("user", userSchema);
