@@ -26,6 +26,7 @@ app.use("/auth", require("./routes/authRoute"));
 
 app.use("/category", require("./routes/categoryRoute"));
 app.use("/product", require("./routes/productRoute"));
+app.use("/type", require("./routes/typeRoute"));
 
 app.get("/hello", function (req, res) {
   res.send("Hello World!");
