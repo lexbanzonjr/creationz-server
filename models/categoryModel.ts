@@ -13,6 +13,7 @@ const categorySchema = new Schema<ICategory>({
   name: {
     type: String,
     require: true,
+    index: true,
   },
   designs: [
     {
