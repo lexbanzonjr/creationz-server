@@ -3,6 +3,7 @@ import { addExMethods, BaseModel, ExModel } from "./mongoose";
 
 export interface ICategory extends BaseModel {
   name: string;
+  description: string;
   designs: {
     name: string;
     type: string;
@@ -14,6 +15,9 @@ const categorySchema = new Schema<ICategory>({
     type: String,
     require: true,
     index: true,
+  },
+  description: {
+    type: String,
   },
   designs: [
     {
