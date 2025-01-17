@@ -4,13 +4,14 @@ import { addExMethods, BaseModel, ExModel } from "./mongoose";
 export interface IProduct extends BaseModel {
   name: string;
   description: string;
-  category_id: Types.ObjectId;
+  category_id?: Types.ObjectId;
 }
 
 const productSchema = new Schema<IProduct>({
   name: {
     type: String,
     require: true,
+    index: true,
   },
   description: {
     type: String,

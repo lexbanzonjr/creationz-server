@@ -8,7 +8,10 @@ import BaseController from "./BaseController";
 
 class TypeController extends BaseController<IType> {
   constructor() {
-    super({ model: typeModel, createModel: (props) => new typeModel(props) });
+    super({
+      model: typeModel,
+      createModel: async (props) => new typeModel(props),
+    });
   }
 
   createOption = async (req: Request, res: Response, next: any) => {

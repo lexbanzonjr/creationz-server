@@ -5,7 +5,7 @@ class UserController extends BaseController<IUser> {
   constructor() {
     super({
       model: userModel,
-      createModel: (props) => new userModel(props),
+      createModel: async (props) => new userModel(props),
     });
   }
 }

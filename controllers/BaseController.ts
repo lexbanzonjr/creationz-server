@@ -7,13 +7,13 @@ import { RestError } from "../utils/RestError";
 export interface BaseControllerProps<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
-  createModel: (props: any) => T;
+  createModel: (props: any) => Promise<T>;
 }
 
 export default class BaseController<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
-  createModel: (props: any) => T;
+  createModel: (props: any) => Promise<T>;
 
   constructor({ model, createModel }: BaseControllerProps<T>) {
     this.model = model;
