@@ -79,4 +79,24 @@ export default class BaseController<T extends Document<unknown, any, any>> {
     }
     next();
   };
+
+  update = async (req: Request, res: Response, next: any) => {
+    const props = req.body;
+    try {
+      const model = await this.model.findByIdAndUpdate(props._id, props, {
+        new: true,
+        runValidators: true,
+      });
+      if (null === model) {
+        throw new RestError("Record not found", { status: 404 });
+      }
+
+      const response: any = {};
+      response[this.model.modelName] = model;
+
+      responseReturn(res, 200, response);
+    } catch (error: any) {
+      responseReturn(res, error.status || 500, { error: error.message });
+    }
+  };
 }
