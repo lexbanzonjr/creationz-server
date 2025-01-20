@@ -4,7 +4,9 @@ import { addExMethods, BaseModel, ExModel } from "./mongoose";
 export interface IProduct extends BaseModel {
   name: string;
   description: string;
+  cost: number;
   category_id?: Types.ObjectId;
+  image_id?: Types.ObjectId[];
 }
 
 const productSchema = new Schema<IProduct>({
@@ -13,6 +15,10 @@ const productSchema = new Schema<IProduct>({
     require: true,
     index: true,
   },
+  cost: {
+    type: Number,
+    require: true,
+  },
   description: {
     type: String,
   },
@@ -20,6 +26,12 @@ const productSchema = new Schema<IProduct>({
     type: Schema.Types.ObjectId,
     ref: "category",
   },
+  image_id: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "binary",
+    },
+  ],
 });
 
 addExMethods(productSchema, { listName: "products" });
