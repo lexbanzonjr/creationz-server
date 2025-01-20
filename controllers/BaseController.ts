@@ -37,7 +37,8 @@ export default class BaseController<T extends Document<unknown, any, any>> {
           status: 400,
         });
       }
-      let doc = await this.createModel(props);
+
+      let doc = await this.createModel({ ...props });
       doc = await doc.save();
 
       const response: any = {};
