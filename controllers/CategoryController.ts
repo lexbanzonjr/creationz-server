@@ -5,7 +5,7 @@ class CategoryController extends BaseController<ICategory> {
   constructor() {
     super({
       model: categoryModel,
-      createModel: async (props: ICategory) => {
+      createModelOverride: async (props: ICategory) => {
         const category = new categoryModel(props);
         if (category.name === "") {
           let int = 0;

@@ -10,7 +10,6 @@ class TypeController extends BaseController<IType> {
   constructor() {
     super({
       model: typeModel,
-      createModel: async (props) => new typeModel(props),
     });
   }
 

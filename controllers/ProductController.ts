@@ -5,7 +5,7 @@ class ProductController extends BaseController<IProduct> {
   constructor() {
     super({
       model: productModel,
-      createModel: async (props: IProduct) => {
+      createModelOverride: async (props: IProduct) => {
         delete props.category_id;
         const product = new productModel(props);
         console.log(product);

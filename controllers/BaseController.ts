@@ -7,17 +7,20 @@ import { RestError } from "../utils/RestError";
 export interface BaseControllerProps<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
-  createModel: (props: any) => Promise<T>;
+  createModelOverride?: (props: any) => Promise<T>;
 }
 
 export default class BaseController<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
-  createModel: (props: any) => Promise<T>;
+  createModelOverride: (props: any) => Promise<T>;
 
-  constructor({ model, createModel }: BaseControllerProps<T>) {
+  constructor({
+    model,
+    createModelOverride,
+  }: BaseControllerProps<T>) {
     this.model = model;
-    this.createModel = createModel;
+    this.createModelOverride = createModelOverride!;
   }
 
   create = async (req: Request, res: Response, next: any) => {
@@ -38,7 +41,12 @@ export default class BaseController<T extends Document<unknown, any, any>> {
         });
       }
 
-      let doc = await this.createModel({ ...props });
+      let doc: T;
+      if (this.createModelOverride!) {
+        doc = await this.createModelOverride({ ...props });
+      } else {
+        doc = this.createModel({ ...props });
+      }
       doc = await doc.save();
 
       const response: any = {};
@@ -50,6 +58,8 @@ export default class BaseController<T extends Document<unknown, any, any>> {
     }
     next();
   };
+
+  createModel = (props: any) => new this.model(props);
 
   delete = async (req: Request, res: Response, next: any) => {
     const { _id } = req.query;
