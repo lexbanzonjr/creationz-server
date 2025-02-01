@@ -23,6 +23,25 @@ class BinaryController extends BaseController<IBinary> {
           data: buffer,
         });
       },
+      getOverride: async (req: Request, res: Response) => {
+        const _id = req.params._id;
+        if (!_id) {
+          throw new RestError('Unknown "_id" param', { status: 400 });
+        }
+        const binary = await binaryModel.findById(_id);
+        if (!binary) {
+          throw new RestError(`Unable to find binary ${_id}`, { status: 404 });
+        }
+
+        // Set headers
+        res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        res.set("Content-Type", binary.contentType);
+        res.set(
+          "Content-Disposition",
+          `attachment; filename="${binary.name}"; id="${binary._id}"`
+        );
+        res.send(binary.data);
+      },
     });
   }
 }

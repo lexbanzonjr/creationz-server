@@ -8,19 +8,23 @@ export interface BaseControllerProps<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
   createModelOverride?: (req: Request, res: Response, props: T) => Promise<T>;
+  getOverride?: (req: Request, res: Response) => Promise<void>;
 }
 
 export default class BaseController<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
   createModelOverride: (req: Request, res: Response, props: T) => Promise<T>;
+  getOverride: (req: Request, res: Response) => Promise<void>;
 
   constructor({
     model,
     createModelOverride,
+    getOverride,
   }: BaseControllerProps<T>) {
     this.model = model;
     this.createModelOverride = createModelOverride!;
+    this.getOverride = getOverride!;
   }
 
   create = async (req: Request, res: Response, next: any) => {
@@ -77,16 +81,20 @@ export default class BaseController<T extends Document<unknown, any, any>> {
 
   get = async (req: Request, res: Response, next: any) => {
     try {
-      let doc = await this.model.findById(req.params._id);
-      if (null === doc)
-        throw new RestError(
-          `${this.model.modelName} "${req.params._id}" does not exist`,
-          { status: 404 }
-        );
+      if (this.getOverride!) {
+        await this.getOverride(req, res);
+      } else {
+        let doc = await this.model.findById(req.params._id);
+        if (null === doc)
+          throw new RestError(
+            `${this.model.modelName} "${req.params._id}" does not exist`,
+            { status: 404 }
+          );
 
-      const response: any = {};
-      response[this.model.modelName] = doc;
-      sendJsonResponse(res, 200, response);
+        const response: any = {};
+        response[this.model.modelName] = doc;
+        sendJsonResponse(res, 200, response);
+      }
     } catch (error: any) {
       sendJsonResponse(res, error.status || 500, { error: error.message });
     }
