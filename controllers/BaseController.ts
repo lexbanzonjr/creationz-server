@@ -7,13 +7,13 @@ import { RestError } from "../utils/RestError";
 export interface BaseControllerProps<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
-  createModelOverride?: (props: any) => Promise<T>;
+  createModelOverride?: (req: Request, res: Response, props: T) => Promise<T>;
 }
 
 export default class BaseController<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
-  createModelOverride: (props: any) => Promise<T>;
+  createModelOverride: (req: Request, res: Response, props: T) => Promise<T>;
 
   constructor({
     model,
@@ -24,31 +24,35 @@ export default class BaseController<T extends Document<unknown, any, any>> {
   }
 
   create = async (req: Request, res: Response, next: any) => {
-    const props = req.body;
+    // Remove _id property to avoid mongoose errors
+    const props = { ...req.body };
     if (props.hasOwnProperty("_id")) {
       delete props._id;
     }
 
     try {
-      // look for object by indexes
+      // Look for object by indexes
       const indexes = await this.model.getIndexes();
       let query: any = {};
       indexes.forEach((name) => (query[name] = props[name]));
 
+      // Check if object exists
       if (await this.model.exists(query)) {
         throw new RestError("Name already exist", {
           status: 400,
         });
       }
 
+      // Create and save the object
       let doc: T;
       if (this.createModelOverride!) {
-        doc = await this.createModelOverride({ ...props });
+        doc = await this.createModelOverride(req, res, props);
       } else {
-        doc = this.createModel({ ...props });
+        doc = this.createModel(props);
       }
       doc = await doc.save();
 
+      // Create response
       const response: any = {};
       response[this.model.modelName] = doc;
 
