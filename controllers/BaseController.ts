@@ -53,8 +53,7 @@ export default class BaseController<T extends Document<unknown, any, any>> {
       doc = await doc.save();
 
       // Create response
-      const response: any = {};
-      response[this.model.modelName] = doc;
+      const response = this.createResponse(doc, indexes);
 
       responseReturn(res, 200, response);
     } catch (error: any) {
@@ -64,6 +63,12 @@ export default class BaseController<T extends Document<unknown, any, any>> {
   };
 
   createModel = (props: any) => new this.model(props);
+
+  createResponse = async (doc: any, indexes: string[]) => {
+    const response: any = {};
+    response[this.model.modelName] = doc;
+    return response;
+  };
 
   delete = async (req: Request, res: Response, next: any) => {
     const { _id } = req.query;
