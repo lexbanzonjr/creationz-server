@@ -75,6 +75,24 @@ export default class BaseController<T extends Document<unknown, any, any>> {
     return response;
   };
 
+  get = async (req: Request, res: Response, next: any) => {
+    try {
+      let doc = await this.model.findById(req.params._id);
+      if (null === doc)
+        throw new RestError(
+          `${this.model.modelName} "${req.params._id}" does not exist`,
+          { status: 404 }
+        );
+
+      const response: any = {};
+      response[this.model.modelName] = doc;
+      responseReturn(res, 200, response);
+    } catch (error: any) {
+      responseReturn(res, error.status || 500, { error: error.message });
+    }
+    next();
+  };
+
   delete = async (req: Request, res: Response, next: any) => {
     const { _id } = req.query;
     try {
