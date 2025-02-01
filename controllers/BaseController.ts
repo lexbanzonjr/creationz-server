@@ -8,23 +8,19 @@ export interface BaseControllerProps<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
   createModelOverride?: (req: Request, res: Response, props: T) => Promise<T>;
-  modifyProps?: (props: T) => Promise<void>;
 }
 
 export default class BaseController<T extends Document<unknown, any, any>> {
   model: ExModel<T>;
 
   createModelOverride: (req: Request, res: Response, props: T) => Promise<T>;
-  modifyProps: (props: T) => Promise<void>;
 
   constructor({
     model,
     createModelOverride,
-    modifyProps,
   }: BaseControllerProps<T>) {
     this.model = model;
     this.createModelOverride = createModelOverride!;
-    this.modifyProps = modifyProps!;
   }
 
   create = async (req: Request, res: Response, next: any) => {
@@ -45,11 +41,6 @@ export default class BaseController<T extends Document<unknown, any, any>> {
         throw new RestError("Name already exist", {
           status: 400,
         });
-      }
-
-      // Prepare the properties if needed by the model
-      if (this.modifyProps!) {
-        await this.modifyProps(props);
       }
 
       // Create and save the object

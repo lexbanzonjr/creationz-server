@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import productModel, { IProduct } from "../models/productModel";
 import BaseController from "./BaseController";
 
@@ -5,7 +6,11 @@ class ProductController extends BaseController<IProduct> {
   constructor() {
     super({
       model: productModel,
-      modifyProps: async (props: IProduct) => {
+      createModelOverride: async (
+        req: Request,
+        res: Response,
+        props: IProduct
+      ) => {
         delete props.category_id;
         if (props.name === "") {
           let int = 0;
@@ -14,6 +19,7 @@ class ProductController extends BaseController<IProduct> {
             props.name = "product" + int++;
           }
         }
+        return props;
       },
     });
   }

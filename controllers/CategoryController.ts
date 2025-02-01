@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import categoryModel, { ICategory } from "../models/categoryModel";
 import BaseController from "./BaseController";
 
@@ -5,7 +6,11 @@ class CategoryController extends BaseController<ICategory> {
   constructor() {
     super({
       model: categoryModel,
-      modifyProps: async (props: ICategory) => {
+      createModelOverride: async (
+        req: Request,
+        res: Response,
+        props: ICategory
+      ) => {
         if (props.name === "") {
           let int = 0;
           props.name = "category" + int;
@@ -13,6 +18,7 @@ class CategoryController extends BaseController<ICategory> {
             props.name = "category" + int++;
           }
         }
+        return props;
       },
     });
   }
