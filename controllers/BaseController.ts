@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Document } from "mongoose";
 import { ExModel } from "../models/mongoose";
-import { responseReturn } from "../utils/response";
+import { sendJsonResponse } from "../utils/response";
 import { RestError } from "../utils/RestError";
 
 export interface BaseControllerProps<T extends Document<unknown, any, any>> {
@@ -55,9 +55,9 @@ export default class BaseController<T extends Document<unknown, any, any>> {
       // Create response
       const response = this.createResponse(doc, indexes);
 
-      responseReturn(res, 200, response);
+      sendJsonResponse(res, 200, response);
     } catch (error: any) {
-      responseReturn(res, error.status || 500, { error: error.message });
+      sendJsonResponse(res, error.status || 500, { error: error.message });
     }
     next();
   };
@@ -86,9 +86,9 @@ export default class BaseController<T extends Document<unknown, any, any>> {
 
       const response: any = {};
       response[this.model.modelName] = doc;
-      responseReturn(res, 200, response);
+      sendJsonResponse(res, 200, response);
     } catch (error: any) {
-      responseReturn(res, error.status || 500, { error: error.message });
+      sendJsonResponse(res, error.status || 500, { error: error.message });
     }
     next();
   };
@@ -98,9 +98,9 @@ export default class BaseController<T extends Document<unknown, any, any>> {
     try {
       await this.model.findByIdAndDelete(_id);
 
-      responseReturn(res, 200);
+      sendJsonResponse(res, 200);
     } catch (error: any) {
-      responseReturn(res, error.status || 500, { error: error.message });
+      sendJsonResponse(res, error.status || 500, { error: error.message });
     }
     next();
   };
@@ -116,9 +116,9 @@ export default class BaseController<T extends Document<unknown, any, any>> {
       }
       let response: any = {};
       response[this.model.getListName()] = list;
-      responseReturn(res, 200, response);
+      sendJsonResponse(res, 200, response);
     } catch (error: any) {
-      responseReturn(res, error.status || 500, { error: error.message });
+      sendJsonResponse(res, error.status || 500, { error: error.message });
     }
     next();
   };
@@ -137,9 +137,9 @@ export default class BaseController<T extends Document<unknown, any, any>> {
       const response: any = {};
       response[this.model.modelName] = model;
 
-      responseReturn(res, 200, response);
+      sendJsonResponse(res, 200, response);
     } catch (error: any) {
-      responseReturn(res, error.status || 500, { error: error.message });
+      sendJsonResponse(res, error.status || 500, { error: error.message });
     }
   };
 }

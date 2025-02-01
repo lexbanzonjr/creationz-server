@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { responseReturn } from "../utils/response";
+import { sendJsonResponse } from "../utils/response";
 
 import typeModel, { IType } from "../models/typeModel";
 import optionModel, { IOption } from "../models/optionModel";
@@ -32,9 +32,9 @@ class TypeController extends BaseController<IType> {
       } as Types.ObjectId & IOption);
       type = await type.save();
 
-      responseReturn(res, 200, { option });
+      sendJsonResponse(res, 200, { option });
     } catch (error: any) {
-      responseReturn(res, error.status || 500, { error: error.message });
+      sendJsonResponse(res, error.status || 500, { error: error.message });
     }
     next();
   };

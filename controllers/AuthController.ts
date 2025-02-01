@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { responseReturn } from "../utils/response";
+import { sendJsonResponse } from "../utils/response";
 import { createToken } from "../utils/token";
 
 import userModel from "../models/userModel";
@@ -43,9 +43,9 @@ class AuthController {
       };
       user.lastLogIn = new Date();
       user = await user.save();
-      responseReturn(res, 200, { accessToken, idToken });
+      sendJsonResponse(res, 200, { accessToken, idToken });
     } catch (error: any) {
-      responseReturn(res, 500, { error: error.message });
+      sendJsonResponse(res, 500, { error: error.message });
     }
     next();
   };
@@ -54,7 +54,7 @@ class AuthController {
     const { name, email, password } = req.body;
     const user = new userModel({ name, email, password, roles: ["customer"] });
     await user.save();
-    responseReturn(res, 200);
+    sendJsonResponse(res, 200);
     next();
   };
 }
