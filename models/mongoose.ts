@@ -1,12 +1,4 @@
-import {
-  Document,
-  Model,
-  Schema,
-  Types,
-  QueryWithHelpers,
-  SchemaType,
-  model,
-} from "mongoose";
+import { Document, Model, Schema, Types, SchemaType } from "mongoose";
 
 class NotFoundError extends Error {
   constructor(message: string) {
@@ -18,6 +10,7 @@ class NotFoundError extends Error {
 export interface ExModel<T extends Document> extends Model<T> {
   findAndPopulate(query: any, populate: string): Promise<T[]>;
   get(query: any): Promise<T>;
+  getBuffers(this: Model<T>): Promise<string[]>;
   getIndexes(this: Model<T>): Promise<string[]>;
   getListName: () => string;
   getReferencedModels(query: string): Promise<ReferenceModel[]>;
@@ -38,6 +31,18 @@ async function findAndPopulate<T extends Document>(
   populate: string = ""
 ): Promise<T[]> {
   return await this.find({ query }).populate(populate);
+}
+
+async function getBuffers<T extends Document>(
+  this: Model<T>
+): Promise<string[]> {
+  const buffers: string[] = [];
+  this.schema.eachPath((path: string, schemaType: SchemaType) => {
+    if (schemaType.options?.type === Buffer) {
+      buffers.push(path);
+    }
+  });
+  return buffers;
 }
 
 async function getIndexes<T extends Document>(
@@ -104,6 +109,7 @@ export function addExMethods<T extends Document>(
 ) {
   schema.statics.findAndPopulate = findAndPopulate;
   schema.statics.get = getOrThrow;
+  schema.statics.getBuffers = getBuffers;
   schema.statics.getIndexes = getIndexes;
   schema.statics.getListName = () => listName;
   schema.statics.getReferencedModels = getReferencedModels;

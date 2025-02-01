@@ -67,6 +67,11 @@ export default class BaseController<T extends Document<unknown, any, any>> {
   createResponse = async (doc: any, indexes: string[]) => {
     const response: any = {};
     response[this.model.modelName] = doc;
+
+    // Don't include any buffers in response
+    const buffers = await this.model.getBuffers();
+    indexes.forEach((buffer) => delete response[this.model.modelName][buffer]);
+
     return response;
   };
 
