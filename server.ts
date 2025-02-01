@@ -24,6 +24,7 @@ app.use(authMiddleware);
 app.use("/user", require("./routes/userRoute"));
 app.use("/auth", require("./routes/authRoute"));
 
+app.use("/binary", require("./routes/binaryRoute"));
 app.use("/category", require("./routes/categoryRoute"));
 app.use("/product", require("./routes/productRoute"));
 app.use("/type", require("./routes/typeRoute"));
