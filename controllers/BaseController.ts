@@ -57,7 +57,8 @@ export default class BaseController<T extends Document<unknown, any, any>> {
       doc = await doc.save();
 
       // Create response
-      const response = this.createResponse(doc, indexes);
+      const response = await this.createResponse(doc, indexes);
+      console.log(response);
 
       sendJsonResponse(res, 200, response);
     } catch (error: any) {
