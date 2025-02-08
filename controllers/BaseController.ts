@@ -85,7 +85,7 @@ export default class BaseController<T extends Document<unknown, any, any>> {
       if (this.getOverride!) {
         await this.getOverride(req, res);
       } else {
-        let doc = await this.model.findById(req.params._id);
+        let doc = await this.model.findByIdEx(req.params._id);
         if (null === doc)
           throw new RestError(
             `${this.model.modelName} "${req.params._id}" does not exist`,

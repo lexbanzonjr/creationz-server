@@ -1,4 +1,7 @@
 import { Document, Model, Schema, Types, SchemaType } from "mongoose";
+import { RedisService } from "./RedisService";
+
+const redisService = new RedisService();
 
 class NotFoundError extends Error {
   constructor(message: string) {
@@ -9,6 +12,7 @@ class NotFoundError extends Error {
 
 export interface ExModel<T extends Document> extends Model<T> {
   findAndPopulate(query: any, populate: string): Promise<T[]>;
+  findByIdEx(this: Model<T>, id: string): Promise<T | null>;
   get(query: any): Promise<T>;
   getBuffers(this: Model<T>): Promise<string[]>;
   getIndexes(this: Model<T>): Promise<string[]>;
@@ -31,6 +35,24 @@ async function findAndPopulate<T extends Document>(
   populate: string = ""
 ): Promise<T[]> {
   return await this.find({ query }).populate(populate);
+}
+
+async function findByIdEx<T extends Document>(
+  this: Model<T>,
+  id: string
+): Promise<T | null> {
+  const key = this.modelName + "." + id;
+
+  const cachedData = await redisService.get(key);
+  if (cachedData) {
+    return cachedData;
+  }
+
+  const data = await this.findById(id);
+  if (data) {
+    await redisService.set(key, data, 10); // cached for 10 seconds
+  }
+  return data;
 }
 
 async function getBuffers<T extends Document>(
@@ -108,6 +130,7 @@ export function addExMethods<T extends Document>(
   { listName }: { listName: string }
 ) {
   schema.statics.findAndPopulate = findAndPopulate;
+  schema.statics.findByIdEx = findByIdEx;
   schema.statics.get = getOrThrow;
   schema.statics.getBuffers = getBuffers;
   schema.statics.getIndexes = getIndexes;
