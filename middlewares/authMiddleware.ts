@@ -12,19 +12,15 @@ export const authMiddleware = async (
   if (!req.url.includes("/auth/")) {
     const authHeader = req.headers["authorization"];
 
-    if (!authHeader) {
-      return res.status(401).send("Missing or invalid Authorization header");
+    if (authHeader) {
+      // Extract the Base64 encoded part (after "Basic ")
+      const accessToken = authHeader.split(" ")[1];
+      const data = decodeToken(accessToken);
+      const user = await userModel.findById(data.id);
+      if (null !== user) {
+        (res.locals as BaseLocals).userId = data.id;
+      }
     }
-
-    // Extract the Base64 encoded part (after "Basic ")
-    const accessToken = authHeader.split(" ")[1];
-    const data = decodeToken(accessToken);
-    const user = await userModel.findById(data.id);
-    if (null === user) {
-      throw new RestError("User not found", { status: 400 });
-    }
-
-    (res.locals as BaseLocals).userId = data.id;
   }
   next();
 };
