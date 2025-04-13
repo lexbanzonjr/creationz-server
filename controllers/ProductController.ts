@@ -19,7 +19,7 @@ class ProductController extends BaseController<IProduct> {
             props.name = "product" + int++;
           }
         }
-        return props;
+        return new productModel(props);
       },
     });
   }
