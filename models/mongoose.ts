@@ -1,4 +1,4 @@
-import { Document, Model, Schema, Types, SchemaType } from "mongoose";
+import { Document, Model, Schema, SchemaType } from "mongoose";
 import { RedisService } from "./RedisService";
 
 const redisService = new RedisService();
@@ -18,10 +18,6 @@ export interface ExModel<T extends Document> extends Model<T> {
   getIndexes(this: Model<T>): Promise<string[]>;
   getListName: () => string;
   getReferencedModels(query: string): Promise<ReferenceModel[]>;
-}
-
-export interface BaseModel extends Document<Types.ObjectId> {
-  _id: Types.ObjectId;
 }
 
 export interface ReferenceModel {

@@ -1,5 +1,6 @@
 import { Schema, model, now } from "mongoose";
-import { addExMethods, BaseModel, ExModel } from "./mongoose";
+import { addExMethods, ExModel } from "./mongoose";
+import { BaseModel } from "./BaseModel";
 
 export interface IUser extends BaseModel {
   name: string;

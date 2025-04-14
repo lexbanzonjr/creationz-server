@@ -1,5 +1,6 @@
 import { Document, Schema, model } from "mongoose";
-import { addExMethods, BaseModel, ExModel } from "./mongoose";
+import { addExMethods, ExModel } from "./mongoose";
+import { BaseModel } from "./BaseModel";
 
 export interface IState extends BaseModel {
   data: Object;

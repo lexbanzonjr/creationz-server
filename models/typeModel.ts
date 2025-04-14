@@ -1,5 +1,6 @@
 import { Schema, Types, model } from "mongoose";
-import { addExMethods, BaseModel, ExModel } from "./mongoose";
+import { addExMethods, ExModel } from "./mongoose";
+import { BaseModel } from "./BaseModel";
 import { IOption, optionSchemaDef } from "./optionModel";
 
 export interface IType extends BaseModel {
