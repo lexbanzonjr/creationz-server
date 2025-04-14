@@ -127,13 +127,13 @@ async function getReferencedModels<T extends Document>(
 
 export function addExMethods<T extends Document>(
   schema: Schema<T>,
-  { listName }: { listName: string }
+  { listName }: { listName?: string }
 ) {
   schema.statics.findAndPopulate = findAndPopulate;
   schema.statics.findByIdEx = findByIdEx;
   schema.statics.get = getOrThrow;
   schema.statics.getBuffers = getBuffers;
   schema.statics.getIndexes = getIndexes;
-  schema.statics.getListName = () => listName;
+  schema.statics.getListName = () => listName ?? "";
   schema.statics.getReferencedModels = getReferencedModels;
 }
