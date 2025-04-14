@@ -75,7 +75,7 @@ export default class BaseController<T extends Document<unknown, any, any>> {
 
     // Don't include any buffers in response
     const buffers = await this.model.getBuffers();
-    indexes.forEach((buffer) => delete response[this.model.modelName][buffer]);
+    buffers.forEach((buffer) => delete response[this.model.modelName][buffer]);
 
     return response;
   };
