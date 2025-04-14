@@ -48,16 +48,29 @@ export default class BaseController<T extends Document<unknown, any, any>> {
       }
 
       // Create and save the object
-      let doc: T;
-      if (this.createModelOverride!) {
-        doc = await this.createModelOverride(req, res, props);
-      } else {
-        doc = this.createModel(props);
-      }
-      doc = await doc.save();
+      const createAndSave = async () => {
+        if (this.createModelOverride!) {
+          return (await this.createModelOverride(req, res, props)).save();
+        } else {
+          return new this.model(props).save();
+        }
+      };
+      const doc = await createAndSave();
 
       // Create response
-      const response = await this.createResponse(doc, indexes);
+      const createResponse = async (doc: any, indexes: string[]) => {
+        const response: any = {};
+        response[this.model.modelName] = doc;
+
+        // Don't include any buffers in response
+        const buffers = await this.model.getBuffers();
+        buffers.forEach(
+          (buffer) => delete response[this.model.modelName][buffer]
+        );
+
+        return response;
+      };
+      const response = await createResponse(doc, indexes);
       console.log(response);
 
       sendJsonResponse(res, 200, response);
@@ -65,19 +78,6 @@ export default class BaseController<T extends Document<unknown, any, any>> {
       sendJsonResponse(res, error.status || 500, { error: error.message });
     }
     next();
-  };
-
-  createModel = (props: any) => new this.model(props);
-
-  createResponse = async (doc: any, indexes: string[]) => {
-    const response: any = {};
-    response[this.model.modelName] = doc;
-
-    // Don't include any buffers in response
-    const buffers = await this.model.getBuffers();
-    buffers.forEach((buffer) => delete response[this.model.modelName][buffer]);
-
-    return response;
   };
 
   get = async (req: Request, res: Response, next: any) => {
