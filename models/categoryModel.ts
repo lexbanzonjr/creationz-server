@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Model, Schema, model } from "mongoose";
 import { addExMethods, ExModel } from "./mongoose";
 import { BaseModel } from "./BaseModel";
 
@@ -33,5 +33,19 @@ const categorySchema = new Schema<ICategory>({
 });
 
 addExMethods(categorySchema, { listName: "categories" });
+
+categorySchema.pre("save", async function (next) {
+  const model = this.constructor as Model<ICategory>;
+
+  if (this.name === "") {
+    let int = 0;
+    this.name = "category" + int;
+    while (await model.exists({ name: this.name })) {
+      this.name = "category" + int++;
+    }
+  }
+
+  next();
+});
 
 export default model<ICategory, ExModel<ICategory>>("category", categorySchema);

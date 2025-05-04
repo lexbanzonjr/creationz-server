@@ -6,21 +6,16 @@ import { RestError } from "../utils/RestError";
 
 export interface BaseControllerProps<T extends Document> {
   model: ExModel<T>;
-
-  createModelOverride?: (req: Request, res: Response, props: T) => Promise<T>;
 }
 
 export default class BaseController<T extends Document> {
   model: ExModel<T>;
 
-  createModelOverride: (req: Request, res: Response, props: T) => Promise<T>;
-
-  constructor({ model, createModelOverride }: BaseControllerProps<T>) {
+  constructor({ model }: BaseControllerProps<T>) {
     this.model = model;
-    this.createModelOverride = createModelOverride!;
   }
 
-  create = async (req: Request, res: Response, next: any) => {
+  async create(req: Request, res: Response, next: any) {
     // Remove _id property to avoid mongoose errors
     const props = { ...req.body };
     if (props.hasOwnProperty("_id")) {
@@ -45,14 +40,7 @@ export default class BaseController<T extends Document> {
       }
 
       // Create and save the object
-      const createAndSave = async () => {
-        if (this.createModelOverride!) {
-          return (await this.createModelOverride(req, res, props)).save();
-        } else {
-          return new this.model(props).save();
-        }
-      };
-      const doc = await createAndSave();
+      const doc = await (await this.model.create(query)).save();
 
       // Create response
       const createResponse = async (doc: any, indexes: string[]) => {
@@ -74,7 +62,7 @@ export default class BaseController<T extends Document> {
       sendJsonResponse(res, error.status || 500, { error: error.message });
     }
     next();
-  };
+  }
 
   async get(req: Request, res: Response, next: any) {
     try {

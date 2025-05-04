@@ -1,4 +1,4 @@
-import { Schema, Types, model } from "mongoose";
+import { Model, Schema, Types, model } from "mongoose";
 import { addExMethods, ExModel } from "./mongoose";
 import { BaseModel } from "./BaseModel";
 
@@ -36,5 +36,18 @@ const productSchema = new Schema<IProduct>({
 });
 
 addExMethods(productSchema, { listName: "products" });
+
+productSchema.pre("save", async function (next) {
+  const model = this.constructor as Model<IProduct>;
+  delete this.category_id;
+  if (this.name === "") {
+    let counter = 0;
+    this.name = "product" + counter;
+    while (await model.exists({ name: this.name })) {
+      this.name = "product" + counter++;
+    }
+  }
+  next();
+});
 
 export default model<IProduct, ExModel<IProduct>>("product", productSchema);

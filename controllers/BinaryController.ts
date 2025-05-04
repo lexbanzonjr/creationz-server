@@ -2,28 +2,40 @@ import { Request, Response } from "express";
 import binaryModel, { IBinary } from "../models/binaryModel";
 import BaseController from "./BaseController";
 import { RestError } from "../utils/RestError";
+import { sendJsonResponse } from "../utils/response";
 
 class BinaryController extends BaseController<IBinary> {
   constructor() {
-    super({
-      model: binaryModel,
-      createModelOverride: async (
-        req: Request,
-        res: Response,
-        props: IBinary
-      ) => {
-        if (!req.file) {
-          throw new RestError("No file uploaded", { status: 400 });
-        }
+    super({ model: binaryModel });
+  }
 
-        const { originalname, mimetype, buffer } = req.file;
-        return new binaryModel({
-          name: originalname,
-          contentType: mimetype,
-          data: buffer,
-        });
-      },
+  async create(req: Request, res: Response, next: any) {
+    // Create response
+    const createResponse = async (doc: any) => {
+      const response = { [this.model.modelName]: doc };
+
+      // Remove data from the response
+      delete response[this.model.modelName]["data"];
+      return response;
+    };
+
+    if (!req.file) {
+      throw new RestError("No file uploaded", { status: 400 });
+    }
+    const { originalname, mimetype, buffer } = req.file;
+    const doc = new binaryModel({
+      name: originalname,
+      contentType: mimetype,
+      data: buffer,
     });
+
+    try {
+      const response = await createResponse(doc);
+      console.log(response);
+      sendJsonResponse(res, 200, response);
+    } catch (error: any) {
+      sendJsonResponse(res, error.status || 500, { error: error.message });
+    }
   }
 
   async get(req: Request, res: Response, next: any) {
