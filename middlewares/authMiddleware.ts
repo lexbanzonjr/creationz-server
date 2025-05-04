@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { decodeToken } from "../utils/token";
-import { BaseLocals } from "./types";
 import userModel from "../models/userModel";
-import { RestError } from "../utils/RestError";
+import { IAccessTokenData } from "../utils/types";
+
+export interface AuthLocal extends IAccessTokenData {}
 
 export const authMiddleware = async (
   req: Request,
@@ -18,7 +19,7 @@ export const authMiddleware = async (
       const data = decodeToken(accessToken);
       const user = await userModel.findById(data.userId);
       if (null !== user) {
-        (res.locals as BaseLocals).userId = data.id;
+        (res.locals.auth as AuthLocal) = data;
       }
     }
   }
