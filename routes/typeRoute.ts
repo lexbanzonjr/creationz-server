@@ -1,10 +1,10 @@
 import { Router } from "express";
-import TypeController from "../controllers/TypeController";
+import TypeHandler from "../handlers/TypeHandler";
 
 let router = Router();
-router.get("", TypeController.list);
-router.delete("", TypeController.delete);
-router.post("", TypeController.create);
-router.post("/:type_id/option", TypeController.createOption);
+router.get("", TypeHandler.list);
+router.delete("", TypeHandler.delete);
+router.post("", TypeHandler.create);
+router.post("/:type_id/option", TypeHandler.createOption);
 
 module.exports = router;

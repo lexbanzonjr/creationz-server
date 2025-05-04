@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import binaryModel, { IBinary } from "../models/binaryModel";
-import BaseController from "./BaseController";
+import BaseHandler from "./BaseHandler";
 import { RestError } from "../utils/RestError";
 import { sendJsonResponse } from "../utils/response";
 
-class BinaryController extends BaseController<IBinary> {
+class BinaryHandler extends BaseHandler<IBinary> {
   constructor() {
     super({ model: binaryModel });
   }
@@ -59,4 +59,4 @@ class BinaryController extends BaseController<IBinary> {
   }
 }
 
-export default new BinaryController();
+export default new BinaryHandler();

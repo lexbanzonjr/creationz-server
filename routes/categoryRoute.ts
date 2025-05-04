@@ -1,10 +1,10 @@
 import { Router } from "express";
-import CategoryController from "../controllers/CategoryController";
+import CategoryHandler from "../handlers/CategoryHandler";
 
 let router = Router();
-router.get("", CategoryController.list);
-router.delete("", CategoryController.delete);
-router.post("", CategoryController.create);
-router.put("", CategoryController.update);
+router.get("", CategoryHandler.list);
+router.delete("", CategoryHandler.delete);
+router.post("", CategoryHandler.create);
+router.put("", CategoryHandler.update);
 
 module.exports = router;

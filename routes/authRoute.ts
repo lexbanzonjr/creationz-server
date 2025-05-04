@@ -1,8 +1,8 @@
 import { Router } from "express";
-import AuthController from "../controllers/AuthController";
+import AuthHandler from "../handlers/AuthHandler";
 
 let router = Router();
-router.post("/login", AuthController.login);
-router.post("/register", AuthController.register);
+router.post("/login", AuthHandler.login);
+router.post("/register", AuthHandler.register);
 
 module.exports = router;

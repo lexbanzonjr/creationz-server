@@ -4,9 +4,9 @@ import { sendJsonResponse } from "../utils/response";
 import typeModel, { IType } from "../models/typeModel";
 import optionModel, { IOption } from "../models/optionModel";
 import { Types } from "mongoose";
-import BaseController from "./BaseController";
+import BaseHandler from "./BaseHandler";
 
-class TypeController extends BaseController<IType> {
+class TypeHandler extends BaseHandler<IType> {
   constructor() {
     super({
       model: typeModel,
@@ -40,4 +40,4 @@ class TypeController extends BaseController<IType> {
   };
 }
 
-export default new TypeController();
+export default new TypeHandler();

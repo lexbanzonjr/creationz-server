@@ -4,14 +4,14 @@ import { ExModel } from "../models/mongoose";
 import { sendJsonResponse } from "../utils/response";
 import { RestError } from "../utils/RestError";
 
-export interface BaseControllerProps<T extends Document> {
+export interface BaseHandlerProps<T extends Document> {
   model: ExModel<T>;
 }
 
-export default class BaseController<T extends Document> {
+export default class BaseHandler<T extends Document> {
   model: ExModel<T>;
 
-  constructor({ model }: BaseControllerProps<T>) {
+  constructor({ model }: BaseHandlerProps<T>) {
     this.model = model;
   }
 

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import UserController from "../controllers/UserController";
+import UserHandler from "../handlers/UserHandler";
 
 let router = Router();
-router.delete("", UserController.delete);
-router.get("", UserController.list);
-router.post("", UserController.create);
+router.delete("", UserHandler.delete);
+router.get("", UserHandler.list);
+router.post("", UserHandler.create);
 
 module.exports = router;

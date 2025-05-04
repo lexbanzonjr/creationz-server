@@ -1,10 +1,10 @@
 import { Router } from "express";
-import ProductController from "../controllers/ProductController";
+import ProductHandler from "../handlers/ProductHandler";
 
 let router = Router();
-router.get("", ProductController.list);
-router.delete("", ProductController.delete);
-router.post("", ProductController.create);
-router.put("", ProductController.update);
+router.get("", ProductHandler.list);
+router.delete("", ProductHandler.delete);
+router.post("", ProductHandler.create);
+router.put("", ProductHandler.update);
 
 module.exports = router;
