@@ -39,7 +39,6 @@ class BinaryController extends BaseController<IBinary> {
   }
 
   async get(req: Request, res: Response, next: any) {
-    console.log("xxx");
     const _id = req.params._id;
     if (!_id) {
       throw new RestError('Unknown "_id" param', { status: 400 });
