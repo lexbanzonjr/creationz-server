@@ -30,8 +30,12 @@ export default class BaseController<T extends Document<unknown, any, any>> {
     try {
       // Look for object by indexes
       const indexes = await this.model.getIndexes();
-      let query: any = {};
-      indexes.forEach((name) => (query[name] = props[name]));
+
+      // Build the query
+      const query = indexes.reduce((acc, name) => {
+        acc[name] = props[name];
+        return acc;
+      }, {} as Record<string, any>);
 
       // Check if object exists
       if (await this.model.exists(query)) {
@@ -52,8 +56,7 @@ export default class BaseController<T extends Document<unknown, any, any>> {
 
       // Create response
       const createResponse = async (doc: any, indexes: string[]) => {
-        const response: any = {};
-        response[this.model.modelName] = doc;
+        const response = { [this.model.modelName]: doc };
 
         // Don't include any buffers in response
         const buffers = await this.model.getBuffers();
@@ -76,14 +79,13 @@ export default class BaseController<T extends Document<unknown, any, any>> {
   async get(req: Request, res: Response, next: any) {
     try {
       const doc = await this.model.findByIdEx(req.params._id);
-      if (null === doc)
+      if (!doc)
         throw new RestError(
           `${this.model.modelName} "${req.params._id}" does not exist`,
           { status: 404 }
         );
 
-      const response: any = {};
-      response[this.model.modelName] = doc;
+      const response: any = { [this.model.modelName]: doc };
       sendJsonResponse(res, 200, response);
     } catch (error: any) {
       sendJsonResponse(res, error.status || 500, { error: error.message });
@@ -108,12 +110,9 @@ export default class BaseController<T extends Document<unknown, any, any>> {
     const populate = req.query.populate as string;
     try {
       const models = await this.model.getReferencedModels(populate);
-      let list: any = await this.model.find().populate<T>(models);
-      if (list === undefined) {
-        list = [];
-      }
-      let response: any = {};
-      response[this.model.getListName()] = list;
+      const list = (await this.model.find().populate<T>(models)) ?? [];
+
+      const response = { [this.model.getListName()]: list };
       sendJsonResponse(res, 200, response);
     } catch (error: any) {
       sendJsonResponse(res, error.status || 500, { error: error.message });
@@ -128,13 +127,11 @@ export default class BaseController<T extends Document<unknown, any, any>> {
         new: true,
         runValidators: true,
       });
-      if (null === model) {
+      if (!model) {
         throw new RestError("Record not found", { status: 404 });
       }
 
-      const response: any = {};
-      response[this.model.modelName] = model;
-
+      const response = { [this.model.modelName]: model };
       sendJsonResponse(res, 200, response);
     } catch (error: any) {
       sendJsonResponse(res, error.status || 500, { error: error.message });
