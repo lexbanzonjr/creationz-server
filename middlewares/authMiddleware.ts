@@ -16,7 +16,7 @@ export const authMiddleware = async (
       // Extract the Base64 encoded part (after "Basic ")
       const accessToken = authHeader.split(" ")[1];
       const data = decodeToken(accessToken);
-      const user = await userModel.findById(data.id);
+      const user = await userModel.findById(data.userId);
       if (null !== user) {
         (res.locals as BaseLocals).userId = data.id;
       }

@@ -32,7 +32,7 @@ class AuthHandler {
       }
 
       const accessToken = createToken({
-        id: user._id,
+        userId: user._id,
         roles: user.roles,
       });
       const idToken = {
