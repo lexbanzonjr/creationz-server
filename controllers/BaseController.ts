@@ -4,13 +4,13 @@ import { ExModel } from "../models/mongoose";
 import { sendJsonResponse } from "../utils/response";
 import { RestError } from "../utils/RestError";
 
-export interface BaseControllerProps<T extends Document<unknown, any, any>> {
+export interface BaseControllerProps<T extends Document> {
   model: ExModel<T>;
 
   createModelOverride?: (req: Request, res: Response, props: T) => Promise<T>;
 }
 
-export default class BaseController<T extends Document<unknown, any, any>> {
+export default class BaseController<T extends Document> {
   model: ExModel<T>;
 
   createModelOverride: (req: Request, res: Response, props: T) => Promise<T>;
