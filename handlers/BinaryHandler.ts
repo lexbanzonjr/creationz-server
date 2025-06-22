@@ -10,12 +10,14 @@ class BinaryHandler extends BaseHandler<IBinary> {
   }
 
   async create(req: Request, res: Response, next: any) {
+    const model = binaryModel;
+
     // Create response
     const createResponse = async (doc: any) => {
-      const response = { [this.model.modelName]: doc };
+      const response = { [model.modelName]: doc };
 
       // Remove data from the response
-      delete response[this.model.modelName]["data"];
+      delete response[model.modelName]["data"];
       return response;
     };
 
@@ -23,11 +25,12 @@ class BinaryHandler extends BaseHandler<IBinary> {
       throw new RestError("No file uploaded", { status: 400 });
     }
     const { originalname, mimetype, buffer } = req.file;
-    const doc = new binaryModel({
+    const doc = new model({
       name: originalname,
       contentType: mimetype,
       data: buffer,
     });
+    await doc.save();
 
     try {
       const response = await createResponse(doc);
