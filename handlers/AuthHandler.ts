@@ -43,7 +43,7 @@ class AuthHandler {
         throw new Error("User not found");
       }
 
-      const accessToken = createToken({
+      const token = createToken({
         userId: user._id,
         roles: user.roles,
         tokenType: "access",
@@ -56,7 +56,7 @@ class AuthHandler {
       };
       user.lastLogIn = new Date();
       user = await user.save();
-      sendJsonResponse(res, 200, { accessToken, idToken });
+      sendJsonResponse(res, 200, { token, idToken });
     } catch (error: any) {
       sendJsonResponse(res, 500, { error: error.message });
     }
