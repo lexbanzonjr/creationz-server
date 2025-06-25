@@ -1,10 +1,22 @@
 import { Request, Response } from "express";
+
+import cartModel from "../models/cartModel";
+import userModel from "../models/userModel";
 import { sendJsonResponse } from "../utils/response";
 import { createToken } from "../utils/token";
 
-import userModel from "../models/userModel";
-
 class AuthHandler {
+  guestToken = async (req: Request, res: Response, next: any) => {
+    const cart = new cartModel({});
+    await cart.save();
+    const guestToken = createToken({
+      cartId: cart._id,
+      tokenType: "guest",
+    });
+    sendJsonResponse(res, 200, { guestToken });
+    next();
+  };
+
   login = async (req: Request, res: Response, next: any) => {
     const authHeader = req.headers["authorization"]; // Get the Authorization header
 
@@ -34,6 +46,7 @@ class AuthHandler {
       const accessToken = createToken({
         userId: user._id,
         roles: user.roles,
+        tokenType: "access",
       });
       const idToken = {
         id: user._id,

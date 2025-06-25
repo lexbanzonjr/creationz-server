@@ -1,17 +1,16 @@
 import jwt, { Secret, sign } from "jsonwebtoken";
-import { IAccessTokenData } from "./types";
+import { IAccessTokenData, IGuestTokenData } from "./types";
 import { RestError } from "./RestError";
 
-export const createToken = (data: IAccessTokenData) => {
+export const createToken = (data: IAccessTokenData | IGuestTokenData) => {
   return sign(data, process.env.SECRET as Secret, { expiresIn: "7d" });
 };
 
-export const decodeToken = (accessToken: string, throwOnError: boolean) => {
+export const decodeToken = (token: string, throwOnError: boolean) => {
   try {
-    return jwt.verify(
-      accessToken,
-      process.env.SECRET as Secret
-    ) as IAccessTokenData;
+    return jwt.verify(token, process.env.SECRET as Secret) as
+      | IAccessTokenData
+      | IGuestTokenData;
   } catch (error) {
     if (throwOnError) {
       throw new RestError("Invalid token", { status: 401 });
