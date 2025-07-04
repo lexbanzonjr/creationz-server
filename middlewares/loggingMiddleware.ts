@@ -16,11 +16,13 @@ export const loggingMiddleware = async (
       return;
     }
 
+    // Decode the token
     try {
       const token = decodeToken(authHeader.split(" ")[1]);
     } catch (error: any) {
       if (error instanceof TokenExpiredError) {
         res.status(401).send("Token expired");
+        return;
       }
     }
   }
