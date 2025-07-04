@@ -6,7 +6,7 @@ import { sendJsonResponse } from "../utils/response";
 import { createToken } from "../utils/token";
 
 class AuthHandler {
-  guestToken = async (req: Request, res: Response, next: any) => {
+  async guestToken(req: Request, res: Response, next: any) {
     const cart = new cartModel({});
     await cart.save();
     const guestToken = createToken({
@@ -15,9 +15,9 @@ class AuthHandler {
     });
     sendJsonResponse(res, 200, { guestToken });
     next();
-  };
+  }
 
-  login = async (req: Request, res: Response, next: any) => {
+  async login(req: Request, res: Response, next: any) {
     const authHeader = req.headers["authorization"]; // Get the Authorization header
 
     if (!authHeader || !authHeader.startsWith("Basic ")) {
@@ -61,15 +61,15 @@ class AuthHandler {
       sendJsonResponse(res, 500, { error: error.message });
     }
     next();
-  };
+  }
 
-  register = async (req: Request, res: Response, next: any) => {
+  async register(req: Request, res: Response, next: any) {
     const { name, email, password } = req.body;
     const user = new userModel({ name, email, password, roles: ["customer"] });
     await user.save();
     sendJsonResponse(res, 200);
     next();
-  };
+  }
 }
 
 export default new AuthHandler();
