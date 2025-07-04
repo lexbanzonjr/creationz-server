@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 
 import { sendJsonResponse } from "../utils/response";
 import { IProduct } from "../models/productModel";
-import { AuthLocal } from "./../middlewares/authMiddleware";
 import { RestError } from "../utils/RestError";
 import userModel from "../models/userModel";
 
@@ -13,7 +12,7 @@ class CartHandler {
       quantity: number;
     };
 
-    const userId = (res.locals.auth as AuthLocal)?.userId;
+    const userId = res.locals.userId;
     try {
       if (!userId) {
         throw new RestError("Only for registered users", { status: 400 });
@@ -30,7 +29,7 @@ class CartHandler {
   }
 
   async get(req: Request, res: Response, next: any) {
-    const userId = (res.locals.auth as AuthLocal)?.userId;
+    const userId = res.locals.userId;
     try {
       if (!userId) {
         throw new RestError("Only for registered users", { status: 400 });
@@ -46,7 +45,7 @@ class CartHandler {
   }
 
   async getSubtotal(req: Request, res: Response, next: any) {
-    const userId = (res.locals.auth as AuthLocal)?.userId;
+    const userId = res.locals.userId;
     try {
       if (!userId) {
         throw new RestError("Only for registered users", { status: 400 });
