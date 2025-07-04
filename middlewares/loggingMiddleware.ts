@@ -9,7 +9,13 @@ export const loggingMiddleware = async (
 ) => {
   const authHeader = req.headers["authorization"];
   if (authHeader) {
-    // Extract the Base64 encoded part (after "Basic ")
+    // Expect "bearer" token in the header
+    const authType = authHeader.split(" ")[0];
+    if (authType !== "Bearer") {
+      res.status(401).send("Invalid token type");
+      return;
+    }
+
     try {
       const token = decodeToken(authHeader.split(" ")[1]);
     } catch (error: any) {
