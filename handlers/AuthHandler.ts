@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import cartModel from "../models/cartModel";
 import userModel from "../models/userModel";
 import { sendJsonResponse } from "../utils/response";
-import { createToken } from "../utils/token";
+import { createToken, refreshToken } from "../utils/token";
 
 class AuthHandler {
   async guestToken(req: Request, res: Response, next: any) {
@@ -68,6 +68,13 @@ class AuthHandler {
     const user = new userModel({ name, email, password, roles: ["customer"] });
     await user.save();
     sendJsonResponse(res, 200);
+    next();
+  }
+
+  async refreshToken(req: Request, res: Response, next: any) {
+    const { token } = req.body;
+    const newToken = refreshToken(token);
+    sendJsonResponse(res, 200, { token: newToken });
     next();
   }
 }
