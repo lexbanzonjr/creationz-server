@@ -5,10 +5,12 @@ export interface ITokenData {
 }
 
 export interface IAccessTokenData extends ITokenData {
+  tokenType: "access";
   userId: Types.ObjectId;
   roles: string[];
 }
 
 export interface IGuestTokenData extends ITokenData {
+  tokenType: "guest";
   cartId: Types.ObjectId;
 }
