@@ -7,25 +7,6 @@ export const loggingMiddleware = async (
   res: Response,
   next: any
 ) => {
-  const authHeader = req.headers["authorization"];
-  if (authHeader) {
-    // Expect "bearer" token in the header
-    const authType = authHeader.split(" ")[0];
-    if (authType !== "Bearer") {
-      res.status(401).send("Invalid token type");
-      return;
-    }
-
-    // Decode the token
-    try {
-      const token = decodeToken(authHeader.split(" ")[1]);
-    } catch (error: any) {
-      if (error instanceof TokenExpiredError) {
-        res.status(401).send("Token expired");
-        return;
-      }
-    }
-  }
   const log = {
     request_api: `${req.method} ${req.originalUrl}`,
     request_body: JSON.stringify(req.body),
