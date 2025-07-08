@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 
 import { sendJsonResponse } from "../utils/response";
 import { IProduct } from "../models/productModel";
-import { RestError } from "../utils/RestError";
-import userModel from "../models/userModel";
 
 class CartHandler {
   async add(req: Request, res: Response, next: any) {
@@ -12,16 +10,9 @@ class CartHandler {
       quantity: number;
     };
 
-    const userId = res.locals.userId;
     try {
-      if (!userId) {
-        throw new RestError("Only for registered users", { status: 400 });
-      }
-
-      const user = await userModel.get({ _id: userId });
-      user.cart.items.push({ product: product._id, quantity });
-      await user.save();
-
+      res.locals.cart.products.push({ productId: product._id, quantity });
+      await res.locals.cart.save();
       sendJsonResponse(res, 200);
     } catch (error: any) {
       sendJsonResponse(res, error.status || 500, { error: error.message });
@@ -29,38 +20,8 @@ class CartHandler {
   }
 
   async get(req: Request, res: Response, next: any) {
-    const userId = res.locals.userId;
     try {
-      if (!userId) {
-        throw new RestError("Only for registered users", { status: 400 });
-      }
-
-      const user = await (
-        await userModel.get({ _id: userId })
-      ).populate("cart.items.product");
-      sendJsonResponse(res, 200, { cart: user.cart });
-    } catch (error: any) {
-      sendJsonResponse(res, error.status || 500, { error: error.message });
-    }
-  }
-
-  async getSubtotal(req: Request, res: Response, next: any) {
-    const userId = res.locals.userId;
-    try {
-      if (!userId) {
-        throw new RestError("Only for registered users", { status: 400 });
-      }
-
-      const user = await (
-        await userModel.get({ _id: userId })
-      ).populate("cart.items.product");
-
-      const subTotal = user.cart.items.reduce(
-        (sum, item) => sum + (item.product as IProduct).cost * item.quantity,
-        0
-      );
-
-      sendJsonResponse(res, 200, { subTotal });
+      sendJsonResponse(res, 200, { cart: res.locals.cart });
     } catch (error: any) {
       sendJsonResponse(res, error.status || 500, { error: error.message });
     }
