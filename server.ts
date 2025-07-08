@@ -19,7 +19,6 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(loggingMiddleware);
 app.use(tokenMiddleware);
 app.use("/user", require("./routes/userRoute"));
 app.use("/auth", require("./routes/authRoute"));
@@ -33,6 +32,8 @@ app.use("/cart", require("./routes/cartRoute"));
 app.get("/hello", function (req, res) {
   res.send("Hello World!");
 });
+
+app.use(loggingMiddleware);
 
 const port = process.env.PORT;
 dbConnect();
