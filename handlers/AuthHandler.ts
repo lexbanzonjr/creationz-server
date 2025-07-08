@@ -9,11 +9,11 @@ class AuthHandler {
   async guestToken(req: Request, res: Response, next: any) {
     const cart = new cartModel({});
     await cart.save();
-    const guestToken = createToken({
+    const token = createToken({
       cartId: cart._id,
       tokenType: "guest",
     });
-    sendJsonResponse(res, 200, { guestToken });
+    sendJsonResponse(res, 200, { token });
     next();
   }
 
