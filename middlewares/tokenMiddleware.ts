@@ -3,7 +3,7 @@ import { TokenExpiredError } from "jsonwebtoken";
 
 import { decodeToken } from "../utils/token";
 
-export const localsMiddleware = async (
+export const tokenMiddleware = async (
   req: Request,
   res: Response,
   next: any

@@ -6,7 +6,7 @@ import https from "https";
 import fs from "fs";
 import path from "path";
 import { loggingMiddleware } from "./middlewares/loggingMiddleware";
-import { localsMiddleware } from "./middlewares/localsMiddleware";
+import { tokenMiddleware } from "./middlewares/tokenMiddleware";
 
 const { dbConnect } = require("./utils/db");
 const app = express();
@@ -20,7 +20,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(loggingMiddleware);
-app.use(localsMiddleware);
+app.use(tokenMiddleware);
 app.use("/user", require("./routes/userRoute"));
 app.use("/auth", require("./routes/authRoute"));
 
