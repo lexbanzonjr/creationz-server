@@ -29,6 +29,11 @@ export const tokenMiddleware = async (
     }
 
     if (isExpired) {
+      // If the endpoint is auth/refresh-token, allow it to proceed
+      if (req.originalUrl.includes("/auth/refresh-token")) {
+        next();
+        return;
+      }
       res.status(401).send("Token expired");
       return;
     }
