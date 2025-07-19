@@ -1,43 +1,33 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { TokenExpiredError } from "jsonwebtoken";
-
 import { decodeToken } from "../utils/token";
 
 export const tokenMiddleware = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
+  console.log("Token middleware triggered");
   res.locals = { populate: req.query.populate };
 
   const authHeader = req.headers["authorization"];
-  if (authHeader) {
-    let isExpired = false;
+  if (!authHeader) return next();
 
-    // Expect "bearer" token in the header
-    const authType = authHeader.split(" ")[0];
-    if (authType === "Bearer") {
-      // Decode the token
-      try {
-        res.locals.token = authHeader.split(" ")[1];
-        res.locals.decodedToken = decodeToken(res.locals.token);
-      } catch (error: any) {
-        if (error instanceof TokenExpiredError) {
-          isExpired = true;
-        }
-      }
-    }
+  const [authType, token] = authHeader.split(" ");
+  if (authType !== "Bearer" || !token) return next();
 
-    if (isExpired) {
-      // If the endpoint is auth/refresh-token, allow it to proceed
-      if (req.originalUrl.includes("/auth/refresh-token")) {
-        next();
-        return;
-      }
-      res.status(401).send("Token expired");
-      return;
+  try {
+    res.locals.token = token;
+    res.locals.decodedToken = decodeToken(token);
+    return next();
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      console.error("Token expired:", error.message);
+      if (!req.originalUrl.includes("/auth/refresh-token"))
+        return res.status(401).send("Token expired");
+      console.log("Requested refresh token");
     }
+    // Optionally handle other errors here
+    return next();
   }
-
-  next();
 };
