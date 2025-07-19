@@ -1,6 +1,8 @@
 import { Types } from "mongoose";
 
 export interface ITokenData {
+  iat: number;
+  exp: number;
   tokenType: "access" | "guest";
 }
 

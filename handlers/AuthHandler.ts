@@ -12,6 +12,8 @@ class AuthHandler {
     const token = createToken({
       cartId: cart._id,
       tokenType: "guest",
+      iat: 0,
+      exp: 0,
     });
     sendJsonResponse(res, 200, { token });
     next();
@@ -47,6 +49,8 @@ class AuthHandler {
         userId: user._id,
         roles: user.roles,
         tokenType: "access",
+        iat: 0,
+        exp: 0,
       });
       const idToken = {
         id: user._id,
@@ -72,7 +76,12 @@ class AuthHandler {
   }
 
   async refreshToken(req: Request, res: Response, next: any) {
-    const { token } = req.body;
+    const token = res.locals.token;
+    if (!token) {
+      return res.status(401).send("No token provided");
+    }
+
+    console.log("Refreshing token...");
     const newToken = refreshToken(token);
     sendJsonResponse(res, 200, { token: newToken });
     next();

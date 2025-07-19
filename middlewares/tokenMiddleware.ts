@@ -18,7 +18,7 @@ export const tokenMiddleware = async (
 
   try {
     res.locals.token = token;
-    res.locals.decodedToken = decodeToken(token);
+    res.locals.decodedToken = decodeToken(token, true);
     return next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
