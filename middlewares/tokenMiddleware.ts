@@ -12,6 +12,8 @@ export const tokenMiddleware = async (
 
   const authHeader = req.headers["authorization"];
   if (authHeader) {
+    let isExpired = false;
+
     // Expect "bearer" token in the header
     const authType = authHeader.split(" ")[0];
     if (authType === "Bearer") {
@@ -21,11 +23,16 @@ export const tokenMiddleware = async (
         res.locals.decodedToken = decodeToken(res.locals.token.split(" ")[1]);
       } catch (error: any) {
         if (error instanceof TokenExpiredError) {
-          res.status(401).send("Token expired");
-          return;
+          isExpired = true;
         }
       }
     }
+
+    if (isExpired) {
+      res.status(401).send("Token expired");
+      return;
+    }
   }
+
   next();
 };
