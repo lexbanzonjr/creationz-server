@@ -20,7 +20,7 @@ export const tokenMiddleware = async (
       // Decode the token
       try {
         res.locals.token = authHeader.split(" ")[1];
-        res.locals.decodedToken = decodeToken(res.locals.token.split(" ")[1]);
+        res.locals.decodedToken = decodeToken(res.locals.token);
       } catch (error: any) {
         if (error instanceof TokenExpiredError) {
           isExpired = true;
