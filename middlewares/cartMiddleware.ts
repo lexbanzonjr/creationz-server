@@ -17,6 +17,7 @@ export const cartMiddleware = async (
       if (!cart) {
         console.log("No cart found for user, creating a new one");
         cart = new cartModel();
+        await cart.save();
         user.cartId = cart._id;
         await user.save();
       }
