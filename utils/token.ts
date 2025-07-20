@@ -3,12 +3,10 @@ import { IAccessTokenData, IGuestTokenData } from "./types";
 import { RestError } from "./RestError";
 
 export const createToken = (data: IAccessTokenData | IGuestTokenData) => {
-  console.log("Create token called with data:", data);
   return sign(data, process.env.SECRET as Secret, { expiresIn: "7d" });
 };
 
 export const decodeToken = (token: string, verify: boolean) => {
-  console.log("Decoding token...");
   const decode = jwt.decode(token) as IAccessTokenData | IGuestTokenData;
   if (!decode) {
     console.error("Failed to decode token");
@@ -16,7 +14,6 @@ export const decodeToken = (token: string, verify: boolean) => {
   }
 
   if (verify) {
-    console.log("Verifying token...");
     return jwt.verify(token, process.env.SECRET as Secret) as
       | IAccessTokenData
       | IGuestTokenData;

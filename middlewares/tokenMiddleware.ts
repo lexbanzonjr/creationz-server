@@ -7,7 +7,6 @@ export const tokenMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("Token middleware triggered");
   res.locals = { populate: req.query.populate };
 
   const authHeader = req.headers["authorization"];
