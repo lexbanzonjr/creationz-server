@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { sendJsonResponse } from "../utils/response";
-import { IProduct } from "../models/productModel";
+import productModel, { IProduct } from "../models/productModel";
 import cartModel, { ICart, ICartProduct } from "../models/cartModel";
 import { Types } from "mongoose";
 
@@ -50,9 +50,14 @@ class CartHandler {
     }
 
     try {
-      const subTotal = cart.products.reduce((total, item) => {
-        return total + item.quantity * (item.productId as any).price;
-      }, 0);
+      let subTotal = 0;
+      for (const item of cart.products) {
+        const product = await productModel.findById(item.productId);
+        if (!product) {
+          continue; // Skip if product not found
+        }
+        subTotal += item.quantity * product.cost;
+      }
       sendJsonResponse(res, 200, { subTotal });
     } catch (error: any) {
       sendJsonResponse(res, error.status || 500, { error: error.message });
