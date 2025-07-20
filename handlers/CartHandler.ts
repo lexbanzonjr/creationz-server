@@ -42,6 +42,22 @@ class CartHandler {
       sendJsonResponse(res, error.status || 500, { error: error.message });
     }
   }
+
+  async getSubTotal(req: Request, res: Response, next: any) {
+    const cart = res.locals.cart as ICart;
+    if (!cart) {
+      return sendJsonResponse(res, 404, { error: "Cart not found" });
+    }
+
+    try {
+      const subTotal = cart.products.reduce((total, item) => {
+        return total + item.quantity * (item.productId as any).price;
+      }, 0);
+      sendJsonResponse(res, 200, { subTotal });
+    } catch (error: any) {
+      sendJsonResponse(res, error.status || 500, { error: error.message });
+    }
+  }
 }
 
 export default new CartHandler();

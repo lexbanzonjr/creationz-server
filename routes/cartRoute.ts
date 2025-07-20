@@ -6,5 +6,6 @@ let router = Router();
 router.use(cartMiddleware);
 router.post("/", CartHandler.add);
 router.get("/", CartHandler.get);
+router.get("/subTotal", CartHandler.getSubTotal);
 
 module.exports = router;
