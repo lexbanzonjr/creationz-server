@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-
 import { sendJsonResponse } from "../utils/response";
 import { IProduct } from "../models/productModel";
 import cartModel, { ICart, ICartProduct } from "../models/cartModel";
@@ -7,15 +6,20 @@ import { Types } from "mongoose";
 
 class CartHandler {
   async add(req: Request, res: Response, next: any) {
-    const { product, quantity } = { ...req.body } as {
-      product: IProduct;
-      quantity: number;
-    };
+    const { product, quantity }: { product: IProduct; quantity: number } =
+      req.body;
     const cart = res.locals.cart as ICart;
-    const item = {
+
+    if (!product || !quantity) {
+      return sendJsonResponse(res, 400, {
+        error: "Product and quantity required",
+      });
+    }
+
+    const item: ICartProduct = {
       productId: new Types.ObjectId(product._id),
-      quantity: quantity,
-    } as ICartProduct;
+      quantity,
+    };
 
     try {
       cart.products.push(item);
@@ -27,12 +31,13 @@ class CartHandler {
   }
 
   async get(req: Request, res: Response, next: any) {
-    if (!res.locals.cart) {
+    const cart = res.locals.cart as ICart;
+    if (!cart) {
       return sendJsonResponse(res, 404, { error: "Cart not found" });
     }
     try {
-      const cart = await cartModel.findById(res.locals.cart._id);
-      sendJsonResponse(res, 200, { cart });
+      const foundCart = await cartModel.findById(cart._id);
+      sendJsonResponse(res, 200, { cart: foundCart });
     } catch (error: any) {
       sendJsonResponse(res, error.status || 500, { error: error.message });
     }
