@@ -22,6 +22,18 @@ class ProductHandler extends BaseHandler<IProduct> {
     await product.save();
     sendJsonResponse(res, 200, { [productModel.modelName]: product });
   }
+
+  async getById(req: Request, res: Response, next: any) {
+    try {
+      const product = await productModel.findById(req.params._id);
+      if (!product) {
+        return sendJsonResponse(res, 404, { error: "Product not found" });
+      }
+      sendJsonResponse(res, 200, { product });
+    } catch (error: any) {
+      sendJsonResponse(res, error.status || 500, { error: error.message });
+    }
+  }
 }
 
 export default new ProductHandler();
