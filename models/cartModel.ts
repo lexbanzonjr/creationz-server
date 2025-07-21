@@ -3,13 +3,13 @@ import { Schema, Types, model } from "mongoose";
 import { BaseModel } from "./BaseModel";
 import { addExMethods, ExModel } from "./mongoose";
 
-export interface ICartProduct {
+export interface ICartItem {
   productId: Types.ObjectId;
   quantity: number;
 }
 
 export interface ICart extends BaseModel {
-  products: ICartProduct[];
+  items: ICartItem[];
 }
 
 const cartProductSchema = new Schema({
@@ -18,7 +18,7 @@ const cartProductSchema = new Schema({
 });
 
 const cartSchema = new Schema<ICart>({
-  products: [cartProductSchema],
+  items: [cartProductSchema],
 });
 
 addExMethods(cartSchema, { listName: "carts" });

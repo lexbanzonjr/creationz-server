@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { sendJsonResponse } from "../utils/response";
 import productModel, { IProduct } from "../models/productModel";
-import cartModel, { ICart, ICartProduct } from "../models/cartModel";
+import cartModel, { ICart, ICartItem } from "../models/cartModel";
 import { Types } from "mongoose";
 
 class CartHandler {
@@ -16,13 +16,13 @@ class CartHandler {
       });
     }
 
-    const item: ICartProduct = {
+    const item: ICartItem = {
       productId: new Types.ObjectId(product._id),
       quantity,
     };
 
     try {
-      cart.products.push(item);
+      cart.items.push(item);
       await cart.save();
       sendJsonResponse(res, 200, { cart });
     } catch (error: any) {
@@ -51,7 +51,7 @@ class CartHandler {
 
     try {
       let subTotal = 0;
-      for (const item of cart.products) {
+      for (const item of cart.items) {
         const product = await productModel.findById(item.productId);
         if (!product) {
           continue; // Skip if product not found
