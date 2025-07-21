@@ -9,18 +9,18 @@ class ProductHandler extends BaseHandler<IProduct> {
   }
 
   async create(req: Request, res: Response, next: any) {
-    const { name, description, cost, category_id, image_id, materials } =
+    const { name, description, cost, categories, image_id, materials } =
       req.body;
     const product = new productModel({
       name,
       description,
       cost,
-      category_id,
+      categories,
       image_id,
       materials,
     });
     await product.save();
-    sendJsonResponse(res, 200, { [productModel.modelName]: product });
+    sendJsonResponse(res, 200, { product });
   }
 
   async getById(req: Request, res: Response, next: any) {
@@ -34,6 +34,16 @@ class ProductHandler extends BaseHandler<IProduct> {
       sendJsonResponse(res, error.status || 500, { error: error.message });
     }
   }
+
+  list = async (req: Request, res: Response, next: any) => {
+    console.log("Listing products");
+    try {
+      const products = await productModel.find();
+      sendJsonResponse(res, 200, { products });
+    } catch (error: any) {
+      sendJsonResponse(res, error.status || 500, { error: error.message });
+    }
+  };
 }
 
 export default new ProductHandler();
