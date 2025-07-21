@@ -3,7 +3,9 @@ import { IAccessTokenData, IGuestTokenData } from "./types";
 import { RestError } from "./RestError";
 
 export const createToken = (data: IAccessTokenData | IGuestTokenData) => {
-  return sign(data, process.env.SECRET as Secret, { expiresIn: "7d" });
+  const { iat, exp, ...newData } = data;
+
+  return sign(newData, process.env.SECRET as Secret, { expiresIn: "7d" });
 };
 
 export const decodeToken = (token: string, verify: boolean) => {
