@@ -17,7 +17,7 @@ class CartHandler {
     }
 
     const item: ICartItem = {
-      productId: new Types.ObjectId(product._id),
+      product: new Types.ObjectId(product._id),
       quantity,
     };
 
@@ -37,6 +37,16 @@ class CartHandler {
     }
     try {
       const foundCart = await cartModel.findById(cart._id);
+      if (!foundCart) {
+        return sendJsonResponse(res, 404, { error: "Cart not found" });
+      }
+      const items = foundCart.items;
+      for (const item of items) {
+        const product = await productModel.findById(item.product);
+        if (product) {
+          item.product = product; // Populate product details
+        }
+      }
       sendJsonResponse(res, 200, { cart: foundCart });
     } catch (error: any) {
       sendJsonResponse(res, error.status || 500, { error: error.message });
@@ -52,7 +62,7 @@ class CartHandler {
     try {
       let subTotal = 0;
       for (const item of cart.items) {
-        const product = await productModel.findById(item.productId);
+        const product = await productModel.findById(item.product);
         if (!product) {
           continue; // Skip if product not found
         }

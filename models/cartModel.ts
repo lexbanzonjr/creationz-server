@@ -2,9 +2,10 @@ import { Schema, Types, model } from "mongoose";
 
 import { BaseModel } from "./BaseModel";
 import { addExMethods, ExModel } from "./mongoose";
+import { IProduct } from "./productModel";
 
 export interface ICartItem {
-  productId: Types.ObjectId;
+  product: Types.ObjectId | IProduct;
   quantity: number;
 }
 
@@ -13,7 +14,7 @@ export interface ICart extends BaseModel {
 }
 
 const cartProductSchema = new Schema({
-  productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+  product: { type: Schema.Types.Mixed, ref: "Product", required: true },
   quantity: { type: Number, required: true },
 });
 
