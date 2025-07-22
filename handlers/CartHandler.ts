@@ -76,19 +76,15 @@ class CartHandler {
 
   async removeItem(req: Request, res: Response, next: any) {
     const cart = res.locals.cart as ICart;
-    const itemId = req.query.item_id as string;
+    const itemId = req.query.item_id;
     if (!cart) {
-      return sendJsonResponse(res, 404, { error: "Cart not found" });
+      return sendJsonResponse(res, 200);
     }
     if (!itemId) {
-      return sendJsonResponse(res, 400, { error: "Missing item_id" });
+      return sendJsonResponse(res, 200);
     }
     try {
-      const initialLength = cart.items.length;
       cart.items = cart.items.filter((item) => item._id?.toString() !== itemId);
-      if (cart.items.length === initialLength) {
-        return sendJsonResponse(res, 404, { error: "Item not found in cart" });
-      }
       await cart.save();
       sendJsonResponse(res, 200, { cart });
     } catch (error: any) {
