@@ -28,6 +28,7 @@ app.use("/category", require("./routes/categoryRoute"));
 app.use("/product", require("./routes/productRoute"));
 app.use("/type", require("./routes/typeRoute"));
 app.use("/cart", require("./routes/cartRoute"));
+app.use("/order", require("./routes/orderRoute"));
 
 app.get("/hello", function (req, res) {
   res.send("Hello World!");
