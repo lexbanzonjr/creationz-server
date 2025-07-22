@@ -4,10 +4,28 @@ import { sendJsonResponse } from "../utils/response";
 
 class OrderHandler {
   async create(req: Request, res: Response, next: any) {
+    // Make sure the cart does not have an order already
+    const existingOrder = await orderModel.exists({
+      "cart._id": res.locals.cart._id,
+    });
+    if (existingOrder) {
+      return sendJsonResponse(res, 400, {
+        error: "Order already exists for this cart",
+      });
+    }
+
+    // Make sure there is at least one item in the cart
+    if (res.locals.cart.items.length === 0) {
+      return sendJsonResponse(res, 400, {
+        error: "Cart is empty",
+      });
+    }
+
+    // Create the order
     try {
       const order = new orderModel({
-        customer: res.locals.user,
-        cart: res.locals.cart,
+        customer: res.locals.decodedToken.userId,
+        cart: res.locals.cart._id,
         status: "pending",
       });
 
