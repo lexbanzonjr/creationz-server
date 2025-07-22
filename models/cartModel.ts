@@ -5,6 +5,7 @@ import { addExMethods, ExModel } from "./mongoose";
 import { IProduct } from "./productModel";
 
 export interface ICartItem {
+  _id?: Types.ObjectId;
   product: Types.ObjectId | IProduct;
   quantity: number;
 }
