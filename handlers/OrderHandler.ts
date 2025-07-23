@@ -53,7 +53,13 @@ class OrderHandler {
       const orders = await orderModel
         .find()
         .populate("customer")
-        .populate("cart");
+        .populate({
+          path: "cart",
+          populate: {
+            path: "items.product",
+            model: "product",
+          },
+        });
 
       sendJsonResponse(res, 200, { orders });
     } catch (error: any) {
@@ -67,8 +73,14 @@ class OrderHandler {
       const { order_id } = req.params;
       const order = await orderModel
         .findById(order_id)
-        .populate("customer", "name email")
-        .populate("cart");
+        .populate("customer")
+        .populate({
+          path: "cart",
+          populate: {
+            path: "items.product",
+            model: "product",
+          },
+        });
 
       if (!order) {
         return sendJsonResponse(res, 404, { error: "Order not found" });
