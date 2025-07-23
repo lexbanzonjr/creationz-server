@@ -11,6 +11,16 @@ export const tokenMiddleware = async (
 ) => {
   res.locals = { populate: req.query.populate };
 
+  // If the request is for guest token, skip the middleware
+  if (req.originalUrl.includes("/auth/guest-token")) {
+    return next();
+  }
+
+  // If the request is for login, skip the middleware
+  if (req.originalUrl.includes("/auth/login")) {
+    return next();
+  }
+
   const authHeader = req.headers["authorization"];
   if (!authHeader)
     return sendJsonResponse(res, 401, {
