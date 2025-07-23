@@ -1,6 +1,7 @@
 import { Schema, Types, model, now } from "mongoose";
 import { addExMethods, ExModel } from "./mongoose";
 import { BaseModel } from "./BaseModel";
+import { ICart } from "./cartModel";
 
 export interface IUser extends BaseModel {
   name: string;
@@ -9,7 +10,7 @@ export interface IUser extends BaseModel {
   dateCreated: Date;
   lastLogIn: Date;
   roles: string[];
-  cartId: Types.ObjectId;
+  cart: Types.ObjectId | ICart;
 }
 
 const userSchema = new Schema<IUser>({
@@ -35,7 +36,7 @@ const userSchema = new Schema<IUser>({
       type: String,
     },
   ],
-  cartId: {
+  cart: {
     type: Schema.Types.ObjectId,
     ref: "cart",
   },

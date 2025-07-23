@@ -13,12 +13,12 @@ export const cartMiddleware = async (
   } else if (res.locals.decodedToken.tokenType === "access") {
     const user = await userModel.findById(res.locals.decodedToken.userId);
     if (user) {
-      cart = await cartModel.findById(user.cartId);
+      cart = await cartModel.findById(user.cart);
       if (!cart) {
         console.log("No cart found for user, creating a new one");
         cart = new cartModel();
         await cart.save();
-        user.cartId = cart._id;
+        user.cart = cart._id;
         await user.save();
       }
     }
