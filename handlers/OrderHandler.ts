@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import orderModel from "../models/orderModel";
+import userModel from "../models/userModel";
 import { sendJsonResponse } from "../utils/response";
 
 class OrderHandler {
   async create(req: Request, res: Response, next: any) {
     // Make sure the cart does not have an order already
     const existingOrder = await orderModel.exists({
-      "cart._id": res.locals.cart._id,
+      cart: res.locals.cart._id,
     });
     if (existingOrder) {
       return sendJsonResponse(res, 400, {
@@ -24,7 +25,7 @@ class OrderHandler {
     // Create the order
     try {
       const order = new orderModel({
-        customer: res.locals.decodedToken.userId,
+        customer: res.locals.user._id,
         cart: res.locals.cart._id,
         status: "pending",
       });

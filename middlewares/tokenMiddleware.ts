@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { TokenExpiredError } from "jsonwebtoken";
 import { decodeToken } from "../utils/token";
 import { sendJsonResponse } from "../utils/response";
+import userModel from "../models/userModel";
 
 export const tokenMiddleware = async (
   req: Request,
@@ -25,6 +26,11 @@ export const tokenMiddleware = async (
   try {
     res.locals.token = token;
     res.locals.decodedToken = decodeToken(token, true);
+
+    // Get user from userId in decoded token
+    const userId = res.locals.decodedToken.userId;
+    res.locals.user = await userModel.findById(userId);
+
     return next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
