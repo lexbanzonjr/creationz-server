@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import cartModel from "../models/cartModel";
 import orderModel from "../models/orderModel";
-import userModel from "../models/userModel";
+import userModel, { IUser } from "../models/userModel";
 import { sendJsonResponse } from "../utils/response";
 
 class OrderHandler {
@@ -38,7 +38,7 @@ class OrderHandler {
       await newCart.save();
 
       // Get the user and update the cart
-      const user = res.locals.user;
+      const user: IUser = res.locals.user;
       user.cart = newCart._id;
       await user.save();
 
