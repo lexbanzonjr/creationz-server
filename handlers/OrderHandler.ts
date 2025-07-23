@@ -37,15 +37,11 @@ class OrderHandler {
     }
     next();
   }
-
   async list(req: Request, res: Response, next: any) {
     try {
-      const orders = await orderModel
-        .find()
-        .populate("user", "name email")
-        .populate("cart");
+      const orders = await orderModel.find().populate("customer").populate("cart");
 
-      sendJsonResponse(res, 200, orders);
+      sendJsonResponse(res, 200, { orders });
     } catch (error: any) {
       sendJsonResponse(res, 500, { error: error.message });
     }
@@ -54,11 +50,9 @@ class OrderHandler {
 
   async getById(req: Request, res: Response, next: any) {
     try {
-      const { order_id } = req.params;
-
-      const order = await orderModel
+      const { order_id } = req.params;      const order = await orderModel
         .findById(order_id)
-        .populate("user", "name email")
+        .populate("customer", "name email")
         .populate("cart");
 
       if (!order) {

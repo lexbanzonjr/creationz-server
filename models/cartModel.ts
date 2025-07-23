@@ -17,13 +17,13 @@ export interface ICart extends BaseModel {
 }
 
 const cartItemSchema = new Schema({
-  product: { type: Schema.Types.Mixed, ref: "Product", required: true },
+  product: { type: Schema.Types.ObjectId, ref: "product", required: true },
   quantity: { type: Number, required: true },
 });
 
 const cartSchema = new Schema<ICart>({
   items: [cartItemSchema],
-  order: { type: Schema.Types.Mixed, ref: "Order" },
+  order: { type: Schema.Types.ObjectId, ref: "order" },
 });
 
 addExMethods(cartSchema, { listName: "carts" });

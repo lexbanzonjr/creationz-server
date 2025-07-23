@@ -13,8 +13,8 @@ export interface IOrder extends BaseModel {
 }
 
 const orderSchema = new Schema<IOrder>({
-  customer: { type: Schema.Types.Mixed, ref: "User", required: true },
-  cart: { type: Schema.Types.Mixed, ref: "Cart", required: true },
+  customer: { type: Schema.Types.ObjectId, ref: "user", required: true },
+  cart: { type: Schema.Types.ObjectId, ref: "cart", required: true },
   status: {
     type: String,
     enum: ["pending", "completed", "cancelled"],
