@@ -50,7 +50,10 @@ class OrderHandler {
   }
   async list(req: Request, res: Response, next: any) {
     try {
-      const orders = await orderModel.find().populate("customer").populate("cart");
+      const orders = await orderModel
+        .find()
+        .populate("customer")
+        .populate("cart");
 
       sendJsonResponse(res, 200, { orders });
     } catch (error: any) {
@@ -61,7 +64,8 @@ class OrderHandler {
 
   async getById(req: Request, res: Response, next: any) {
     try {
-      const { order_id } = req.params;      const order = await orderModel
+      const { order_id } = req.params;
+      const order = await orderModel
         .findById(order_id)
         .populate("customer", "name email")
         .populate("cart");
