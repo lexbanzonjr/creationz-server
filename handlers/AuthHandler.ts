@@ -40,7 +40,9 @@ class AuthHandler {
     }
 
     try {
-      let user = await userModel.findOne({ email, password });
+      let user = await userModel
+        .findOne({ email, password })
+        .select("+password");
       if (null === user) {
         throw new Error("User not found");
       }
